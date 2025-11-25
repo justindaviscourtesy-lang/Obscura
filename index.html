@@ -781,7 +781,7 @@
             <label class="config-label" for="cardMainInput">Main text</label>
             <textarea class="textarea" id="cardMainInput" placeholder="What the challenge or punishment actually is."></textarea>
           </div>
-          <div class="config-form-row">
+          <div class="config-form-row" id="bonusRow">
             <label class="config-label" for="cardBonusInput">Bonus (optional)</label>
             <textarea class="textarea" id="cardBonusInput" placeholder="Extra twist if they want to make it worse for themselves. Leave blank for none."></textarea>
           </div>
@@ -1091,6 +1091,7 @@
     const cardActiveInput = document.getElementById("cardActiveInput");
     const saveCardBtn = document.getElementById("saveCardBtn");
     const configInfo = document.getElementById("configInfo");
+    const bonusRow = document.getElementById("bonusRow");
 
     // ---------- Game setup ----------
 
@@ -1099,6 +1100,20 @@
       decks.punFirst = loadDeck(STORAGE_KEYS.punFirst, defaultPunFirstDate);
       decks.punXXX = loadDeck(STORAGE_KEYS.punXXX, defaultPunXXX);
       updateDeckCounts();
+    }
+
+    // Strip any bonus fields off challenge cards that might be in localStorage
+    function stripChallengeBonuses() {
+      let changed = false;
+      decks.challenges.forEach(card => {
+        if (card && card.bonus) {
+          delete card.bonus;
+          changed = true;
+        }
+      });
+      if (changed) {
+        saveDeck(STORAGE_KEYS.challenges, decks.challenges);
+      }
     }
 
     function updateDeckCounts() {
@@ -1150,20 +1165,40 @@
         cardTypeTag.textContent = "SONG BATTLE";
       } else if (type === "punishment") {
         cardStatus.textContent = "PUNISHMENT";
-        cardTypeTag.textContent = fromDeckLabel;
+        cardTypeTag.textContent = fromDeckLabel || "PUNISHMENT";
       } else {
         cardStatus.textContent = "INFO";
         cardTypeTag.textContent = "PRESS START GAME";
       }
 
       cardMainText.textContent = main;
-      cardBonusText.textContent = bonus ? "Bonus: " + bonus : "";
-      cardBonusText.style.display = bonus ? "block" : "none";
+
+      // Only punishments can show Bonus text
+      if (type === "punishment" && bonus) {
+        cardBonusText.textContent =
+          "Bonus: " + bonus +
+          " (loser only — if they take the Bonus, the winner drinks too.)";
+        cardBonusText.style.display = "block";
+      } else {
+        cardBonusText.textContent = "";
+        cardBonusText.style.display = "none";
+      }
+
       cardVibeEl.textContent = "Vibe: " + vibe;
-      cardCount.textContent = `${position} / ${total}`;
-      cardFooterMeta.textContent = type === "challenge"
-        ? "Loser of the song battle rolls a punishment next."
-        : "Do the dare exactly as written. Adjust only if both players want it hotter.";
+
+      if (typeof position === "number" && typeof total === "number" && total > 0 && position > 0) {
+        cardCount.textContent = `${position} / ${total}`;
+      } else {
+        cardCount.textContent = "0 / 0";
+      }
+
+      if (type === "challenge") {
+        cardFooterMeta.textContent = "Loser of the song battle rolls a punishment next.";
+      } else if (type === "punishment") {
+        cardFooterMeta.textContent = "Punishment is on the loser. If they also take the Bonus, the winner drinks too.";
+      } else {
+        cardFooterMeta.textContent = "Song battle not started.";
+      }
     }
 
     function rollChallenge() {
@@ -1235,7 +1270,7 @@
       let usedCount = total;
       if (lastPunishmentDeck === "punFirst") usedCount = total - remaining.punFirst.length;
       if (lastPunishmentDeck === "punXXX") usedCount = total - remaining.punXXX.length;
-      if (currentMode === MODES.MIXED) usedCount = (total + 0); // we just show "—" for mixed
+      if (currentMode === MODES.MIXED) usedCount = (total + 0);
       const position = usedCount;
       const card = deckArr[index];
       currentCardType = "punishment";
@@ -1257,7 +1292,6 @@
     }
 
     function resetDecksAndStorage() {
-      // reset to defaults + keep edits? We'll just reload from storage; there’s also a way to hard reset if needed.
       resetRemainingDecks();
       rollChallengeBtn.disabled = false;
       rollPunishmentBtn.disabled = false;
@@ -1283,6 +1317,18 @@
       if (configDeckKey === "pun_first") return STORAGE_KEYS.punFirst;
       if (configDeckKey === "pun_xxx") return STORAGE_KEYS.punXXX;
       return STORAGE_KEYS.challenges;
+    }
+
+    function updateBonusFieldVisibility() {
+      const isPunDeck = configDeckKey === "pun_first" || configDeckKey === "pun_xxx";
+      if (isPunDeck) {
+        bonusRow.style.display = "flex";
+        cardBonusInput.disabled = false;
+      } else {
+        bonusRow.style.display = "none";
+        cardBonusInput.disabled = true;
+        cardBonusInput.value = "";
+      }
     }
 
     function renderConfigList() {
@@ -1330,6 +1376,7 @@
       const card = deck[configSelectedIndex];
       cardTitleInput.value = card.title || "";
       cardMainInput.value = card.main || card.text || card.body || "";
+      // Bonus only meaningful for punishment decks; for safety we still load it if present
       cardBonusInput.value = card.bonus || "";
       cardVibeInput.value = card.vibe || "";
       cardActiveInput.checked = card.active !== false;
@@ -1342,7 +1389,13 @@
       const card = deck[configSelectedIndex];
       card.title = cardTitleInput.value.trim() || "(untitled)";
       card.main = cardMainInput.value.trim();
-      card.bonus = cardBonusInput.value.trim();
+      const isPunDeck = configDeckKey === "pun_first" || configDeckKey === "pun_xxx";
+      if (isPunDeck) {
+        card.bonus = cardBonusInput.value.trim();
+      } else {
+        // Challenges never keep a bonus
+        delete card.bonus;
+      }
       card.vibe = cardVibeInput.value.trim();
       card.active = !!cardActiveInput.checked;
       const key = getStorageKeyForConfigDeck();
@@ -1355,13 +1408,16 @@
 
     function addNewCard() {
       const deck = getConfigDeckArray();
+      const isPunDeck = configDeckKey === "pun_first" || configDeckKey === "pun_xxx";
       const newCard = {
         title: "New card",
         main: "",
-        bonus: "",
         vibe: "",
         active: true
       };
+      if (isPunDeck) {
+        newCard.bonus = "";
+      }
       deck.push(newCard);
       configSelectedIndex = deck.length - 1;
       saveDeck(getStorageKeyForConfigDeck(), deck);
@@ -1432,18 +1488,22 @@
       configSelectedIndex = 0;
       renderConfigList();
       loadConfigCardIntoForm();
+      updateBonusFieldVisibility();
     });
 
     addCardBtn.addEventListener("click", () => {
       addNewCard();
+      updateBonusFieldVisibility();
     });
 
     duplicateCardBtn.addEventListener("click", () => {
       duplicateCard();
+      updateBonusFieldVisibility();
     });
 
     deleteCardBtn.addEventListener("click", () => {
       deleteCard();
+      updateBonusFieldVisibility();
     });
 
     saveCardBtn.addEventListener("click", () => {
@@ -1452,11 +1512,17 @@
 
     // ---------- Init ----------
 
-    loadAllDecks();
-    setMode(MODES.FIRST);
-    resetRemainingDecks();
-    renderConfigList();
-    loadConfigCardIntoForm();
+    function init() {
+      loadAllDecks();
+      stripChallengeBonuses(); // wipe any old bonuses from challenges
+      setMode(MODES.FIRST);
+      resetRemainingDecks();
+      renderConfigList();
+      loadConfigCardIntoForm();
+      updateBonusFieldVisibility();
+    }
+
+    init();
   </script>
 </body>
 </html>
