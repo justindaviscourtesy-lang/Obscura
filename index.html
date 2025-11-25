@@ -3,23 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <title>OBSCURA – Music Drinking Game</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     :root {
-      --bg1: #0b1020;
-      --bg2: #151a2e;
-      --accent1: #ff5f91;
-      --accent2: #5f8dff;
-      --accent3: #ffd065;
-      --card-bg: #1c2140;
-      --text-main: #f7f7ff;
-      --text-muted: #b3b6d8;
-      --danger: #ff7272;
-      --success: #4ade80;
-      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.55);
-      --radius-xl: 24px;
-      --radius-lg: 18px;
-      --radius-pill: 999px;
+      --bg: #050614;
+      --bg-card: radial-gradient(circle at 0 0, #1b1135, #050614 55%);
+      --neon-pink: #ff5fbd;
+      --neon-blue: #5f8dff;
+      --neon-yellow: #ffe066;
+      --neon-green: #4ade80;
+      --text-main: #f9f7ff;
+      --text-muted: #b2b5d8;
+      --radius-card: 24px;
+      --shadow-card: 0 18px 40px rgba(0, 0, 0, 0.75);
       --transition-fast: 150ms ease-out;
       --transition-med: 220ms ease-out;
     }
@@ -28,53 +24,56 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      -webkit-tap-highlight-color: transparent;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
         "Segoe UI", sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
       min-height: 100vh;
+      background:
+        radial-gradient(circle at top, #261b57 0, #050614 55%),
+        radial-gradient(circle at bottom, #14172c 0, #050614 40%);
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at top, #252b52 0, #050714 60%);
       color: var(--text-main);
     }
 
-    .app-shell {
+    .app {
       width: 100%;
       max-width: 900px;
-      padding: env(safe-area-inset-top, 16px) 10px env(safe-area-inset-bottom, 20px);
+      padding: 18px 10px 26px;
     }
 
-    .app-inner {
-      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+    .shell {
+      background: linear-gradient(145deg, #050614, #101427 60%, #050614);
       border-radius: 28px;
-      padding: 18px 14px 22px;
-      box-shadow: var(--shadow-soft);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 18px 14px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.75);
       position: relative;
       overflow: hidden;
     }
 
-    .app-inner::before {
+    .shell::before {
       content: "";
       position: absolute;
-      inset: -40%;
+      inset: -30%;
       background:
-        radial-gradient(circle at 0 0, rgba(255, 95, 145, 0.11), transparent 55%),
-        radial-gradient(circle at 100% 0, rgba(95, 141, 255, 0.13), transparent 55%);
-      opacity: 0.9;
+        radial-gradient(circle at 0 0, rgba(255, 95, 189, 0.18), transparent 55%),
+        radial-gradient(circle at 100% 0, rgba(95, 141, 255, 0.18), transparent 55%),
+        radial-gradient(circle at 50% 100%, rgba(255, 209, 101, 0.18), transparent 60%);
+      opacity: 0.8;
       pointer-events: none;
     }
 
-    .app-inner > * {
+    .shell > * {
       position: relative;
       z-index: 1;
     }
 
-    .header-row {
+    .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -84,9 +83,9 @@
 
     .title-block h1 {
       font-size: 1.5rem;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--accent3);
+      color: var(--neon-yellow);
     }
 
     .title-block p {
@@ -95,528 +94,382 @@
       margin-top: 2px;
     }
 
-    .right-header-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      align-items: flex-end;
-    }
-
-    .pill {
+    .tag-chip {
       padding: 6px 12px;
-      border-radius: var(--radius-pill);
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(5, 6, 20, 0.88);
+      color: var(--text-muted);
       font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      background: rgba(21, 26, 54, 0.9);
-      color: var(--text-muted);
-      border: 1px solid rgba(255, 255, 255, 0.1);
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      white-space: nowrap;
     }
 
-    .pill-dot {
-      width: 7px;
-      height: 7px;
+    .tag-dot {
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: var(--success);
-      box-shadow: 0 0 10px rgba(74, 222, 128, 0.7);
+      background: var(--neon-green);
+      box-shadow: 0 0 12px rgba(74, 222, 128, 0.9);
     }
 
-    .config-toggle {
-      padding: 4px 10px;
-      border-radius: var(--radius-pill);
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background: rgba(10, 12, 28, 0.85);
-      color: var(--accent2);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-    }
-
-    .config-toggle span.icon {
-      font-size: 0.9rem;
-    }
-
-    .config-toggle.active {
-      background: rgba(95, 141, 255, 0.18);
-      color: var(--accent3);
-      border-color: var(--accent2);
-    }
-
-    .rules-card {
-      background: rgba(10, 12, 28, 0.9);
-      border-radius: var(--radius-lg);
-      padding: 10px 12px 9px;
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      font-size: 0.78rem;
-      color: var(--text-muted);
+    .layout {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 16px;
+      margin-top: 10px;
     }
 
-    .rules-card strong {
-      color: var(--text-main);
-      font-weight: 600;
-    }
-
-    .rules-badge-row {
+    .card-area {
       display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 2px;
+      justify-content: center;
     }
 
-    .rules-tag {
-      padding: 3px 8px;
-      border-radius: var(--radius-pill);
-      background: rgba(22, 26, 58, 0.96);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      font-size: 0.72rem;
-      color: var(--text-muted);
+    .card-wrapper {
+      perspective: 1400px;
+      width: min(420px, 100%);
     }
 
-    .layout-main {
-      display: grid;
-      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-      gap: 14px;
-      margin-top: 14px;
-    }
-
-    @media (max-width: 720px) {
-      .layout-main {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-
-    .card-frame {
-      background: radial-gradient(circle at top, #303566, #12152c);
-      border-radius: var(--radius-xl);
+    .card {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3 / 4.3;
+      border-radius: var(--radius-card);
+      background: var(--bg-card);
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      box-shadow: var(--shadow-card);
       padding: 16px 14px;
-      border: 1px solid rgba(255, 255, 255, 0.09);
-      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.55);
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card-badge-row {
-      display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-
-    .card-badge-row span {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .card-counter {
-      padding: 4px 9px;
-      border-radius: var(--radius-pill);
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    .card-inner {
-      background: rgba(12, 15, 37, 0.95);
-      border-radius: 18px;
-      padding: 13px 12px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      min-height: 140px;
-      position: relative;
       overflow: hidden;
+      transform-style: preserve-3d;
+      transition:
+        transform var(--transition-med),
+        box-shadow var(--transition-med),
+        border-color var(--transition-med),
+        background 260ms ease-out;
     }
 
-    .card-inner::before {
+    .card.neon-pink {
+      border-color: rgba(255, 95, 189, 0.9);
+      box-shadow: 0 0 22px rgba(255, 95, 189, 0.65), var(--shadow-card);
+    }
+
+    .card.neon-blue {
+      border-color: rgba(95, 141, 255, 0.9);
+      box-shadow: 0 0 22px rgba(95, 141, 255, 0.65), var(--shadow-card);
+    }
+
+    .card.neon-yellow {
+      border-color: rgba(255, 224, 102, 0.9);
+      box-shadow: 0 0 22px rgba(255, 224, 102, 0.65), var(--shadow-card);
+    }
+
+    .card.neon-green {
+      border-color: rgba(74, 222, 128, 0.9);
+      box-shadow: 0 0 22px rgba(74, 222, 128, 0.65), var(--shadow-card);
+    }
+
+    .card::before {
       content: "";
       position: absolute;
-      inset: -20%;
+      inset: -40%;
       background:
-        radial-gradient(circle at 0 100%, rgba(255, 95, 145, 0.12), transparent 55%),
-        radial-gradient(circle at 100% 0, rgba(95, 141, 255, 0.18), transparent 55%);
-      opacity: 0;
-      transition: opacity var(--transition-med);
+        radial-gradient(circle at 0 0, rgba(255, 95, 189, 0.18), transparent 55%),
+        radial-gradient(circle at 100% 0, rgba(95, 141, 255, 0.18), transparent 55%),
+        radial-gradient(circle at 50% 100%, rgba(255, 224, 102, 0.15), transparent 60%);
+      mix-blend-mode: screen;
+      opacity: 0.8;
       pointer-events: none;
     }
 
-    .card-inner.active::before {
-      opacity: 1;
+    .card-content {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .card-pill {
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      background: rgba(5, 6, 20, 0.8);
+      font-size: 0.68rem;
     }
 
     .card-title {
-      font-size: 1.05rem;
-      font-weight: 650;
-      letter-spacing: 0.08em;
+      margin-top: 12px;
+      font-size: 1.2rem;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: #ffffff;
+      font-weight: 700;
+      text-align: center;
     }
 
-    .card-sub {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-top: 1px;
+    .card-divider {
+      height: 1px;
+      width: 100%;
+      margin: 12px 0 10px;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 95, 189, 0.4),
+        rgba(95, 141, 255, 0.6),
+        rgba(255, 224, 102, 0.4)
+      );
+      opacity: 0.8;
     }
 
     .card-section-label {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: rgba(255, 255, 255, 0.55);
-      margin-top: 6px;
-      margin-bottom: 1px;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
     }
 
-    .card-body {
-      font-size: 0.86rem;
-      color: var(--text-main);
+    .card-text {
+      font-size: 0.88rem;
+      line-height: 1.35;
     }
 
-    .card-punishment {
-      font-size: 0.86rem;
-      color: var(--accent3);
+    .card-text strong {
+      color: var(--neon-yellow);
+      font-weight: 600;
+    }
+
+    .card-bottom {
+      margin-top: 8px;
+    }
+
+    .card-punish {
+      font-size: 0.88rem;
+      line-height: 1.35;
+      color: var(--neon-yellow);
     }
 
     .controls {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      align-self: stretch;
+      margin-top: 10px;
     }
 
-    .roll-button {
-      width: 100%;
+    .button-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      flex: 1;
+      border-radius: 999px;
       border: none;
-      border-radius: var(--radius-pill);
-      padding: 13px 18px;
-      font-size: 0.95rem;
+      padding: 12px 14px;
+      font-size: 0.9rem;
       font-weight: 600;
-      letter-spacing: 0.12em;
       text-transform: uppercase;
+      letter-spacing: 0.14em;
       cursor: pointer;
-      background: linear-gradient(135deg, var(--accent1), var(--accent2));
-      color: #050612;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      position: relative;
-      overflow: hidden;
-      transition: transform var(--transition-fast), box-shadow var(--transition-fast),
-        filter var(--transition-fast), opacity var(--transition-fast);
+      color: #050614;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-blue));
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.75);
+      transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast),
+        filter var(--transition-fast),
+        opacity var(--transition-fast);
     }
 
-    .roll-button span.icon {
-      font-size: 1.1rem;
+    .btn-secondary {
+      flex: 0 0 auto;
+      min-width: 120px;
+      color: var(--text-main);
+      background: rgba(5, 6, 20, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7);
     }
 
-    .roll-button::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.45), transparent 60%);
-      opacity: 0;
-      mix-blend-mode: screen;
-      transition: opacity var(--transition-fast);
-      pointer-events: none;
-    }
-
-    .roll-button:active {
-      transform: translateY(1px) scale(0.98);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.75);
-      filter: brightness(0.98);
-    }
-
-    .roll-button[disabled] {
-      opacity: 0.7;
+    .btn:disabled {
+      opacity: 0.5;
       cursor: default;
       transform: none;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
     }
 
-    .status-line {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
+    .btn:active:not(:disabled) {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.85);
+      filter: brightness(0.97);
     }
 
-    .status-line strong {
-      color: var(--accent3);
-      font-weight: 500;
-    }
-
-    .tiny {
-      font-size: 0.75rem;
-    }
-
-    .rolling {
-      animation: wobble 0.4s ease-in-out infinite alternate;
-    }
-
-    @keyframes wobble {
-      0% { transform: translateY(0) rotate(-0.4deg); }
-      100% { transform: translateY(-1px) rotate(0.4deg); }
-    }
-
-    .card-inner.reveal {
-      animation: revealCard 260ms ease-out;
-    }
-
-    @keyframes revealCard {
-      0% {
-        transform: translateY(10px) scale(0.97);
-        opacity: 0;
-      }
-      100% {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-      }
-    }
-
-    /* CONFIG PANEL */
-
-    .config-panel {
-      margin-top: 8px;
-      background: rgba(5, 7, 20, 0.96);
-      border-radius: 18px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 10px 12px 12px;
-      display: none;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .config-panel.active {
-      display: flex;
-    }
-
-    .config-header {
+    .status-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 8px;
-    }
-
-    .config-header span {
       font-size: 0.78rem;
       color: var(--text-muted);
     }
 
-    .config-card-label {
-      font-size: 0.78rem;
-      color: var(--accent3);
+    .status-row strong {
+      color: var(--neon-yellow);
     }
 
-    .config-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 6px;
-      margin-top: 4px;
-    }
-
-    .config-field {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .config-field label {
+    .status-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(5, 6, 20, 0.94);
+      border: 1px solid rgba(255, 255, 255, 0.14);
       font-size: 0.72rem;
-      color: var(--text-muted);
-    }
-
-    .config-field input,
-    .config-field textarea,
-    .config-field select {
-      width: 100%;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background: rgba(10, 12, 30, 0.98);
-      color: var(--text-main);
-      font-size: 0.8rem;
-      padding: 6px 8px;
-      resize: vertical;
-      min-height: 30px;
-    }
-
-    .config-field textarea {
-      min-height: 46px;
-      max-height: 120px;
-    }
-
-    .config-buttons {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-top: 6px;
-    }
-
-    .btn-small {
-      border-radius: var(--radius-pill);
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      background: rgba(18, 22, 45, 0.95);
-      color: var(--text-main);
-      padding: 6px 10px;
-      font-size: 0.74rem;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      cursor: pointer;
+      letter-spacing: 0.12em;
     }
 
-    .btn-small.save {
-      border-color: var(--accent2);
-      background: linear-gradient(135deg, rgba(95,141,255,0.4), rgba(95,141,255,0.1));
-      color: #f9f9ff;
+    /* Card animations */
+
+    .card-roll {
+      animation: cardRoll 0.55s ease-in-out;
     }
 
-    .config-message {
-      font-size: 0.72rem;
-      color: var(--success);
-      min-height: 14px;
-    }
-
-    @media (max-width: 480px) {
-      .title-block h1 {
-        font-size: 1.35rem;
+    @keyframes cardRoll {
+      0% {
+        transform: translateY(0) rotate3d(1, 0, 0, 0deg) scale(1);
       }
-      .app-inner {
+      30% {
+        transform: translateY(-8px) rotate3d(1, 0, 0, 12deg) scale(1.03);
+      }
+      60% {
+        transform: translateY(4px) rotate3d(1, 0, 0, -10deg) scale(0.98);
+      }
+      100% {
+        transform: translateY(0) rotate3d(1, 0, 0, 0deg) scale(1);
+      }
+    }
+
+    .card-reveal {
+      animation: cardReveal 0.35s ease-out;
+    }
+
+    @keyframes cardReveal {
+      0% {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .shell {
         padding: 16px 12px 18px;
       }
-      .card-frame {
+      .card {
         padding: 14px 12px;
       }
       .card-title {
-        font-size: 0.98rem;
+        font-size: 1.06rem;
+        letter-spacing: 0.14em;
+      }
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .button-row {
+        flex-direction: column;
+      }
+      .btn-secondary {
+        width: 100%;
       }
     }
   </style>
 </head>
 <body>
-  <div class="app-shell">
-    <div class="app-inner">
-      <div class="header-row">
+  <div class="app">
+    <div class="shell">
+      <div class="header">
         <div class="title-block">
           <h1>OBSCURA</h1>
-          <p>Two-player music drinking game • Roll a random prompt and dare.</p>
+          <p>15-second music duel • no repeat cards • loser drinks + obeys the card.</p>
         </div>
-        <div class="right-header-actions">
-          <div class="pill">
-            <span class="pill-dot"></span>
-            <span>Tap roll to draw a card</span>
-          </div>
-          <button class="config-toggle" id="configToggle">
-            <span class="icon">⚙️</span>
-            <span>Config Mode</span>
-          </button>
+        <div class="tag-chip">
+          <span class="tag-dot"></span>
+          <span>Tap to draw a neon card</span>
         </div>
       </div>
 
-      <div class="rules-card">
-        <div>
-          <strong>Core rule:</strong> Play the first <strong>15 seconds</strong> of your song.
-          If your opponent can name the <strong>song or artist within 10 seconds</strong>, you lose the round.
-        </div>
-        <div><strong>Loser drinks</strong> and completes the punishment on the card.</div>
-        <div class="rules-badge-row">
-          <div class="rules-tag">2 players</div>
-          <div class="rules-tag">Fast rounds</div>
-          <div class="rules-tag">iPhone-friendly</div>
-        </div>
-      </div>
+      <div class="layout">
+        <div class="card-area">
+          <div class="card-wrapper">
+            <div class="card neon-blue" id="card">
+              <div class="card-content">
+                <div class="card-top">
+                  <span>Card <span id="cardNumber">0</span> / 100</span>
+                  <span class="card-pill" id="cardVibe">Deck Idle</span>
+                </div>
 
-      <div class="layout-main">
-        <div class="card-frame">
-          <div class="card-badge-row">
-            <span>
-              <span style="width:8px;height:8px;border-radius:50%;background:var(--accent1);"></span>
-              <span id="cardTypeLabel">Category</span>
-            </span>
-            <span class="card-counter" id="cardCounter">Card 0 / 100</span>
-          </div>
-          <div class="card-inner" id="cardInner">
-            <div class="card-title" id="cardTitle">Tap “Roll a Card” to start</div>
-            <div class="card-sub" id="cardTagline">
-              You’ll get a theme to match with music and a punishment for whoever loses the round.
-            </div>
+                <div>
+                  <div class="card-title" id="cardTitle">
+                    Press Start Game
+                  </div>
+                  <div class="card-divider"></div>
 
-            <div class="card-section-label">Theme</div>
-            <div class="card-body" id="cardThemeText">
-              Roll a card, both players choose a song that fits the theme. Play 15 seconds. If your opponent recognizes your track in time, you lose.
-            </div>
+                  <div>
+                    <div class="card-section-label">Theme</div>
+                    <div class="card-text" id="cardTheme">
+                      When you start, each card will give you a theme for the kind of song to play.
+                      You both pick a song, play the first 15 seconds, and see who recognizes the other’s track.
+                    </div>
+                  </div>
 
-            <div class="card-section-label">Punishment</div>
-            <div class="card-punishment" id="cardPunishmentText">
-              Loser drinks once. Some cards add extra dares.
+                  <div class="card-bottom">
+                    <div class="card-section-label">Punishment</div>
+                    <div class="card-punish" id="cardPunishment">
+                      If your opponent can name your song or artist within 10 seconds, you lose the round and obey the punishment on the card.
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         <div class="controls">
-          <button class="roll-button" id="rollButton">
-            <span class="icon">🎴</span>
-            <span>Roll a Card</span>
-          </button>
-          <div class="status-line">
-            <span class="tiny">
-              <strong>Round flow:</strong> Both pick a song for the theme, play 15 seconds, then see if the other can name it in 10.
-            </span>
+          <div class="button-row">
+            <button class="btn-secondary" id="startBtn">
+              Start Game
+            </button>
+            <button class="btn" id="drawBtn" disabled>
+              🎴 Draw Card
+            </button>
           </div>
-
-          <div class="config-panel" id="configPanel">
-            <div class="config-header">
-              <span class="config-card-label" id="configCardLabel">Editing: no card selected yet</span>
-              <button class="btn-small" id="resetConfig">Reset All</button>
-            </div>
-            <div class="config-grid">
-              <div class="config-field">
-                <label for="cfgTitle">Title</label>
-                <input id="cfgTitle" type="text" placeholder="Card title" />
-              </div>
-              <div class="config-field">
-                <label for="cfgTagline">Tagline</label>
-                <input id="cfgTagline" type="text" placeholder="Short one-line description" />
-              </div>
-              <div class="config-field">
-                <label for="cfgTheme">Theme (what kind of song to play)</label>
-                <textarea id="cfgTheme" placeholder="Describe the theme for the music pick"></textarea>
-              </div>
-              <div class="config-field">
-                <label for="cfgPunishment">Punishment (what the loser does)</label>
-                <textarea id="cfgPunishment" placeholder="Describe what the loser has to do"></textarea>
-              </div>
-              <div class="config-field">
-                <label for="cfgVibe">Vibe label (just for flavor)</label>
-                <select id="cfgVibe">
-                  <option value="fun">Party / Fun</option>
-                  <option value="flirty">Flirty</option>
-                  <option value="stupid">Stupid / Meme</option>
-                  <option value="intense">High Stakes</option>
-                  <option value="custom">Custom</option>
-                </select>
-              </div>
-            </div>
-            <div class="config-buttons">
-              <button class="btn-small save" id="saveConfigBtn">Save Card</button>
-            </div>
-            <div class="config-message" id="configMessage"></div>
+          <div class="status-row">
+            <span id="statusText">
+              Press <strong>Start Game</strong> to shuffle the deck and begin.
+            </span>
+            <span class="status-pill" id="remainingText">Remaining: 0</span>
           </div>
         </div>
       </div>
@@ -625,404 +478,342 @@
 
   <script>
     /*
-      CONFIG + STORAGE:
-      - Cards live in the categories array.
-      - When you edit a card in Config Mode and hit "Save Card", it's stored in localStorage ("obscuraCards").
-      - To reset to default, tap "Reset All" in Config Mode.
-      - iPhone Safari will keep your custom deck until you clear site data.
+      OBSCURA – Neon Loot Box Edition
+      - 100 prefilled cards: title, theme, punishment, vibe.
+      - Start Game: shuffles deck, resets index, no repeats until deck is exhausted.
+      - Draw Card: animated reveal of next card.
+      - You can edit the cards array directly to customize.
     */
 
-    const baseCategories = [
+    const cards = [
+      // 1–10
       {
-        id: 1,
         title: "Twerk Trigger",
-        tagline: "If the beat drops, someone’s moving.",
-        theme: "Pick a song that makes people want to twerk instantly.",
-        punishment: "Loser has to twerk for the winner for 5 seconds.",
+        theme: "A song that instantly makes you want to throw ass.",
+        punishment: "Loser twerks for 5 seconds.",
         vibe: "fun"
       },
       {
-        id: 2,
-        title: "Main Character Walk-In",
-        tagline: "Entrance music only.",
-        theme: "Play the song you’d want playing as you walk into a party in slow motion.",
-        punishment: "Loser must do a slow-motion walk across the room while the winner hypes them.",
-        vibe: "fun"
-      },
-      {
-        id: 3,
-        title: "Lip-Bite Energy",
-        tagline: "Not explicit, just dangerous.",
-        theme: "Choose a song with subtle sexual tension — smooth, low-key, not corny.",
-        punishment: "Loser must hold eye contact with the winner for 10 seconds.",
-        vibe: "flirty"
-      },
-      {
-        id: 4,
         title: "Menace Mode",
-        tagline: "Villain music only.",
-        theme: "Pick a song you’d play right before doing something petty or chaotic.",
-        punishment: "Loser confesses one petty thing they’ve done.",
-        vibe: "fun"
-      },
-      {
-        id: 5,
-        title: "Shoulder Roll",
-        tagline: "If your shoulders don't move, wrong song.",
-        theme: "Choose a track that makes your shoulders move without thinking.",
-        punishment: "Loser must chair-dance until the next round starts.",
-        vibe: "fun"
-      },
-      {
-        id: 6,
-        title: "Chaos Button",
-        tagline: "Make them say: what is this?",
-        theme: "Play the most unexpected, chaotic, or cursed song you can justify.",
-        punishment: "Loser takes a big drink and dramatically yells the song title.",
+        theme: "Villain music you’d play before doing something petty.",
+        punishment: "Loser admits one petty thing they’ve done.",
         vibe: "stupid"
       },
       {
-        id: 7,
-        title: "Underrated Gem",
-        tagline: "Flex your hidden taste.",
-        theme: "Pick a song you swear people sleep on or that no one plays enough.",
-        punishment: "Loser has to give the winner a genuine compliment.",
-        vibe: "flirty"
-      },
-      {
-        id: 8,
-        title: "Throwback Punch",
-        tagline: "Nostalgia with hands.",
-        theme: "Choose a throwback banger that would make 2010-era you lose it.",
-        punishment: "Loser sings one line from the chorus, no backing down.",
+        title: "Shoulder Roll",
+        theme: "A track that forces your shoulders to move.",
+        punishment: "Loser must chair–dance until the next card.",
         vibe: "fun"
       },
       {
-        id: 9,
+        title: "Main Character Walk-In",
+        theme: "Entrance music you’d use walking into a room in slow motion.",
+        punishment: "Loser does a dramatic walk while winner hypes them.",
+        vibe: "fun"
+      },
+      {
+        title: "Chaos Button",
+        theme: "The most chaotic, cursed, or unhinged song you can justify.",
+        punishment: "Loser loudly yells the song title.",
+        vibe: "stupid"
+      },
+      {
+        title: "Lip-Bite Energy",
+        theme: "A subtle, tension-heavy song that feels flirty, not corny.",
+        punishment: "Loser holds eye contact with winner for 10 seconds.",
+        vibe: "flirty"
+      },
+      {
+        title: "Throwback Punch",
+        theme: "A nostalgia banger from your childhood or teen years.",
+        punishment: "Loser sings one line from the chorus.",
+        vibe: "fun"
+      },
+      {
         title: "Dirty Bassline",
-        tagline: "Bass that feels illegal inside.",
-        theme: "Pick a track with heavy bass that hits immediately.",
-        punishment: "Loser drops to one knee in front of the winner for 3 seconds (then stand back up and drink).",
+        theme: "A song with filthy bass that hits immediately.",
+        punishment: "Loser drops to one knee in front of winner for 3 seconds.",
         vibe: "playful"
       },
       {
-        id: 10,
-        title: "Happy Drunk",
-        tagline: "Feels like your favorite shot.",
-        theme: "Choose a song that feels like being tipsy in a good way.",
-        punishment: "Loser must do a dumb happy dance for 5 seconds.",
-        vibe: "fun"
+        title: "Underrated Gem",
+        theme: "A song you swear people sleep on and shouldn’t.",
+        punishment: "Loser gives winner a genuine compliment.",
+        vibe: "flirty"
       },
       {
-        id: 11,
         title: "Almost Making Out",
-        tagline: "Right before it actually happens.",
-        theme: "Pick a smooth, cozy track that would play right before a makeout, not during.",
-        punishment: "Winner chooses where the loser sits next round (closer, across, side-by-side).",
+        theme: "A warm track that would play right before a makeout.",
+        punishment: "Winner chooses where loser sits for the next round.",
         vibe: "flirty"
       },
+
+      // 11–20
       {
-        id: 12,
-        title: "Pull-In Track",
-        tagline: "The space between gets smaller.",
-        theme: "Choose a song that naturally makes people sit a little closer.",
-        punishment: "Loser must sit wherever the winner tells them for the next round.",
-        vibe: "flirty"
-      },
-      {
-        id: 13,
-        title: "Heat Check",
-        tagline: "Hype or sexy, just raise the temp.",
-        theme: "Pick a song that raises the energy or tension in the room.",
-        punishment: "Loser has to answer one bold question from the winner.",
-        vibe: "flirty"
-      },
-      {
-        id: 14,
-        title: "Meme War",
-        tagline: "We’re not being serious anymore.",
-        theme: "Play the funniest, dumbest, or most meme-heavy song you can.",
-        punishment: "Loser must reenact 5 seconds of the music video or vibe.",
-        vibe: "stupid"
-      },
-      {
-        id: 15,
         title: "Midnight Drive",
-        tagline: "Windows cracked, city passing by.",
-        theme: "Choose a song you’d play driving after midnight with someone in the passenger seat.",
-        punishment: "Loser has to tell one honest late-night thought.",
+        theme: "A song for driving after midnight with someone riding shotgun.",
+        punishment: "Loser shares one honest late-night thought.",
         vibe: "chill"
       },
       {
-        id: 16,
-        title: "Tension Breaker",
-        tagline: "When it gets too serious, you play this.",
-        theme: "Pick a song that would instantly turn tension into laughter.",
-        punishment: "Loser must say one thing they find attractive about the winner.",
+        title: "Happy Drunk",
+        theme: "A track that feels like your favorite shot just hit.",
+        punishment: "Loser does a dumb happy dance for 5 seconds.",
+        vibe: "fun"
+      },
+      {
+        title: "Meme War",
+        theme: "The funniest or dumbest meme song you can think of.",
+        punishment: "Loser reenacts 5 seconds of the song’s vibe.",
+        vibe: "stupid"
+      },
+      {
+        title: "Heat Check",
+        theme: "A song that raises the room’s energy or tension.",
+        punishment: "Loser answers one bold question from winner.",
         vibe: "flirty"
       },
       {
-        id: 17,
         title: "Entrance of Chaos",
-        tagline: "You walk in, it gets loud.",
-        theme: "Choose a song that would play when the wildest person shows up.",
-        punishment: "Loser drinks and has to introduce themself like they’re that person.",
+        theme: "The track that plays when the wildest friend shows up.",
+        punishment: "Loser introduces themself like they’re that person.",
         vibe: "fun"
       },
       {
-        id: 18,
         title: "Slow Trouble",
-        tagline: "Soft, but you know it’s trouble.",
-        theme: "Pick a slow song that feels like you’re about to do something you probably shouldn’t.",
-        punishment: "Loser has to sit a little closer for the next 2 rounds.",
+        theme: "A slow song that feels like you’re about to do something wrong.",
+        punishment: "Loser must sit slightly closer for the next two cards.",
         vibe: "flirty"
       },
       {
-        id: 19,
-        title: "Group Chat Mention",
-        tagline: "The one you’d send to the chat.",
-        theme: "Choose a song you’d drop in a group chat like: “This is a hit, don’t argue.”",
-        punishment: "Loser admits one thing they’ve lied about in a group chat.",
+        title: "Group Chat Drop",
+        theme: "A song you’d drop in the group chat saying “no skips”.",
+        punishment: "Loser admits one thing they lied about in a group chat.",
         vibe: "fun"
       },
       {
-        id: 20,
         title: "Unskippable",
-        tagline: "You never hit skip on this.",
-        theme: "Play a song that you literally never skip when it comes on.",
-        punishment: "Loser has to finish whatever’s in their hand or take a long sip.",
+        theme: "A song you never skip, no matter your mood.",
+        punishment: "Loser takes a long drink or finishes what’s in their cup.",
         vibe: "intense"
-      }
-    ];
+      },
+      {
+        title: "Hype Tunnel",
+        theme: "A song that would play as you run out into an arena.",
+        punishment: "Loser has to shadow–walk like they’re entering the stage.",
+        vibe: "fun"
+      },
+      {
+        title: "Soft Chaos",
+        theme: "A calm song with slightly unhinged lyrics.",
+        punishment: "Loser reads one lyric dramatically out loud.",
+        vibe: "stupid"
+      },
 
-    const TOTAL_SLOTS = 100;
-    let categories = [];
+      // 21–30
+      {
+        title: "Toxic Bop",
+        theme: "A song that is clearly toxic but still a banger.",
+        punishment: "Loser admits one toxic trait.",
+        vibe: "stupid"
+      },
+      {
+        title: "Texting at 2AM",
+        theme: "The song that would be playing while you send a risky text.",
+        punishment: "Loser shares a text they regret sending (or drink twice).",
+        vibe: "flirty"
+      },
+      {
+        title: "Club Bathroom",
+        theme: "A track you’d hear blasting from a stall at 1AM.",
+        punishment: "Loser has to hype themselves in the mirror for 5 seconds.",
+        vibe: "fun"
+      },
+      {
+        title: "Slow Grind",
+        theme: "A classic slow song that people grind to.",
+        punishment: "Loser slow–dances alone for 5 seconds.",
+        vibe: "flirty"
+      },
+      {
+        title: "Windows Down",
+        theme: "A song that demands open windows and full volume.",
+        punishment: "Loser sings along to the next card’s song intro.",
+        vibe: "fun"
+      },
+      {
+        title: "Movie Trailer",
+        theme: "A song that could score a dramatic movie trailer.",
+        punishment: "Loser narrates a fake movie trailer about themselves.",
+        vibe: "fun"
+      },
+      {
+        title: "First Crush",
+        theme: "A song that reminds you of your early crush era.",
+        punishment: "Loser tells one embarrassing crush story.",
+        vibe: "chill"
+      },
+      {
+        title: "Shower Concert",
+        theme: "A song you’d scream in the shower.",
+        punishment: "Loser sings one word dramatically like they’re on stage.",
+        vibe: "fun"
+      },
+      {
+        title: "Boss Battle",
+        theme: "A track that feels like fighting a final boss.",
+        punishment: "Loser must pose like a boss for 3 seconds.",
+        vibe: "intense"
+      },
+      {
+        title: "Overconfident",
+        theme: "A song that makes you feel hotter than you really are.",
+        punishment: "Loser strikes their best model pose for 5 seconds.",
+        vibe: "playful"
+      },
 
-    // Fill remaining slots as editable custom slots
-    function buildDefaultCategories() {
-      const arr = [];
-      for (let i = 0; i < TOTAL_SLOTS; i++) {
-        if (i < baseCategories.length) {
-          arr.push({ ...baseCategories[i] });
-        } else {
-          const id = i + 1;
-          arr.push({
-            id,
-            title: `Custom Slot ${id}`,
-            tagline: "Edit this slot in Config Mode to add your own idea.",
-            theme: "Set your own music theme in Config Mode.",
-            punishment: "Set your own punishment in Config Mode.",
-            vibe: "custom"
-          });
-        }
-      }
-      return arr;
-    }
+      // 31–40
+      {
+        title: "Kitchen Dance",
+        theme: "A song that makes you dance while cooking.",
+        punishment: "Loser freestyles a tiny dance move in place.",
+        vibe: "fun"
+      },
+      {
+        title: "Ay, That’s My Song",
+        theme: "A track that would make you yell if it came on in public.",
+        punishment: "Loser has to hype up the winner’s next song like a DJ.",
+        vibe: "fun"
+      },
+      {
+        title: "Slow Burn",
+        theme: "A song that starts chill but builds into something intense.",
+        punishment: "Loser takes a slow, dramatic drink while making eye contact.",
+        vibe: "flirty"
+      },
+      {
+        title: "High School Hallway",
+        theme: "A song that belongs in a teen movie hallway scene.",
+        punishment: "Loser recreates their old hallway walk.",
+        vibe: "fun"
+      },
+      {
+        title: "Sneaky Link",
+        theme: "A song that gives sneaking-out energy.",
+        punishment: "Loser whispers one secret they haven’t told many people.",
+        vibe: "flirty"
+      },
+      {
+        title: "Gym PR",
+        theme: "A song you’d use for a personal record at the gym.",
+        punishment: "Loser does 5 bodyweight squats or 5 wall pushups.",
+        vibe: "intense"
+      },
+      {
+        title: "Villain Origin",
+        theme: "A track that could play during your villain origin story.",
+        punishment: "Loser gives their best evil laugh.",
+        vibe: "stupid"
+      },
+      {
+        title: "Playlist Flex",
+        theme: "One of your top 5 songs right now.",
+        punishment: "Loser has to follow one music recommendation from winner later.",
+        vibe: "chill"
+      },
+      {
+        title: "First Night Out",
+        theme: "A song that reminds you of early partying days.",
+        punishment: "Loser tells a short story from a night out.",
+        vibe: "fun"
+      },
+      {
+        title: "Room Goes Quiet",
+        theme: "A song where everyone would stop and listen.",
+        punishment: "Loser must sit silently for the next 15 seconds.",
+        vibe: "intense"
+      },
 
-    // STORAGE
-    const STORAGE_KEY = "obscuraCards_v1";
+      // 41–50
+      {
+        title: "Spicy Lyrics",
+        theme: "A song with lyrics that are way spicier than the beat.",
+        punishment: "Loser reads one lyric out loud without laughing.",
+        vibe: "stupid"
+      },
+      {
+        title: "Soft Glow",
+        theme: "A gentle song that still hits emotionally.",
+        punishment: "Loser shares a song that makes them emotional (no details needed).",
+        vibe: "chill"
+      },
+      {
+        title: "Dance Circle",
+        theme: "A track that belongs in the middle of a dance circle.",
+        punishment: "Loser shows a tiny 3-second move.",
+        vibe: "fun"
+      },
+      {
+        title: "Controversial Favorite",
+        theme: "A song people love to hate or hate to love.",
+        punishment: "Loser defends a controversial opinion for 10 seconds.",
+        vibe: "stupid"
+      },
+      {
+        title: "Bedroom Lights Off",
+        theme: "A track that sounds best with the lights off.",
+        punishment: "Loser has to sit with eyes closed until the next card is drawn.",
+        vibe: "flirty"
+      },
+      {
+        title: "Car Karaoke",
+        theme: "A song you’d scream in the car with friends.",
+        punishment: "Loser has to mime singing with an imaginary mic.",
+        vibe: "fun"
+      },
+      {
+        title: "Headphones Only",
+        theme: "A song that hits way better in headphones than speakers.",
+        punishment: "Loser quietly listens to the next intro alone (ear to phone).",
+        vibe: "chill"
+      },
+      {
+        title: "Too Many Replays",
+        theme: "A song you completely burned out by overplaying.",
+        punishment: "Loser admits something else they overdid.",
+        vibe: "fun"
+      },
+      {
+        title: "Sneak Diss",
+        theme: "A track that sounds like a subtweet in music form.",
+        punishment: "Loser tells a story about being petty or being sub–tweeted.",
+        vibe: "stupid"
+      },
+      {
+        title: "Late Night Loop",
+        theme: "A song you could leave on repeat at 3AM.",
+        punishment: "Loser must sit closer or take two sips (their choice).",
+        vibe: "flirty"
+      },
 
-    function loadFromStorage() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return null;
-        const parsed = JSON.parse(raw);
-        if (!Array.isArray(parsed)) return null;
-        return parsed;
-      } catch (e) {
-        return null;
-      }
-    }
-
-    function saveToStorage() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(categories));
-      } catch (e) {
-        // ignore
-      }
-    }
-
-    function resetStorage() {
-      try {
-        localStorage.removeItem(STORAGE_KEY);
-      } catch (e) {
-        // ignore
-      }
-    }
-
-    // INIT
-    const stored = loadFromStorage();
-    categories = stored && stored.length === TOTAL_SLOTS
-      ? stored
-      : buildDefaultCategories();
-
-    const rollButton = document.getElementById("rollButton");
-    const cardInner = document.getElementById("cardInner");
-    const cardTitle = document.getElementById("cardTitle");
-    const cardTagline = document.getElementById("cardTagline");
-    const cardThemeText = document.getElementById("cardThemeText");
-    const cardPunishmentText = document.getElementById("cardPunishmentText");
-    const cardCounter = document.getElementById("cardCounter");
-    const cardTypeLabel = document.getElementById("cardTypeLabel");
-
-    const configToggle = document.getElementById("configToggle");
-    const configPanel = document.getElementById("configPanel");
-    const cfgTitle = document.getElementById("cfgTitle");
-    const cfgTagline = document.getElementById("cfgTagline");
-    const cfgTheme = document.getElementById("cfgTheme");
-    const cfgPunishment = document.getElementById("cfgPunishment");
-    const cfgVibe = document.getElementById("cfgVibe");
-    const saveConfigBtn = document.getElementById("saveConfigBtn");
-    const configMessage = document.getElementById("configMessage");
-    const configCardLabel = document.getElementById("configCardLabel");
-    const resetConfig = document.getElementById("resetConfig");
-
-    let isRolling = false;
-    let lastIndex = -1;
-
-    function pickRandomIndex() {
-      if (categories.length <= 1) return 0;
-      let idx;
-      do {
-        idx = Math.floor(Math.random() * categories.length);
-      } while (idx === lastIndex);
-      return idx;
-    }
-
-    function setCardTypeLabel(card) {
-      if (card.vibe === "flirty") {
-        cardTypeLabel.textContent = "Flirty Card";
-      } else if (card.vibe === "fun") {
-        cardTypeLabel.textContent = "Party Card";
-      } else if (card.vibe === "stupid") {
-        cardTypeLabel.textContent = "Chaos Card";
-      } else if (card.vibe === "intense") {
-        cardTypeLabel.textContent = "High Stakes Card";
-      } else if (card.vibe === "chill") {
-        cardTypeLabel.textContent = "Chill Card";
-      } else {
-        cardTypeLabel.textContent = "Custom Card";
-      }
-    }
-
-    function applyCardToUI(card) {
-      cardTitle.textContent = card.title;
-      cardTagline.textContent = card.tagline;
-      cardThemeText.textContent = card.theme;
-      cardPunishmentText.textContent = card.punishment;
-      cardCounter.textContent = `Card ${card.id} / ${TOTAL_SLOTS}`;
-      setCardTypeLabel(card);
-    }
-
-    function rollCard() {
-      if (isRolling) return;
-      isRolling = true;
-      rollButton.disabled = true;
-      rollButton.classList.add("rolling");
-      cardInner.classList.remove("reveal", "active");
-
-      const rollDuration = 850;
-      const step = 80;
-
-      const tempInterval = setInterval(() => {
-        const idx = Math.floor(Math.random() * categories.length);
-        applyCardToUI(categories[idx]);
-      }, step);
-
-      setTimeout(() => {
-        clearInterval(tempInterval);
-        const finalIndex = pickRandomIndex();
-        lastIndex = finalIndex;
-        const card = categories[finalIndex];
-
-        applyCardToUI(card);
-        cardInner.classList.add("reveal", "active");
-
-        // update config panel fields if open
-        if (configPanel.classList.contains("active")) {
-          loadCurrentCardIntoConfig();
-        }
-
-        setTimeout(() => {
-          isRolling = false;
-          rollButton.disabled = false;
-          rollButton.classList.remove("rolling");
-        }, 220);
-      }, rollDuration);
-    }
-
-    rollButton.addEventListener("click", rollCard);
-
-    // CONFIG MODE
-
-    function toggleConfigPanel() {
-      if (configPanel.classList.contains("active")) {
-        configPanel.classList.remove("active");
-        configToggle.classList.remove("active");
-      } else {
-        configPanel.classList.add("active");
-        configToggle.classList.add("active");
-        loadCurrentCardIntoConfig();
-      }
-    }
-
-    function loadCurrentCardIntoConfig() {
-      configMessage.textContent = "";
-      if (lastIndex < 0) {
-        configCardLabel.textContent = "Editing: no card selected yet (roll one first)";
-        cfgTitle.value = "";
-        cfgTagline.value = "";
-        cfgTheme.value = "";
-        cfgPunishment.value = "";
-        cfgVibe.value = "custom";
-        return;
-      }
-      const card = categories[lastIndex];
-      configCardLabel.textContent = `Editing: Card ${card.id}`;
-      cfgTitle.value = card.title || "";
-      cfgTagline.value = card.tagline || "";
-      cfgTheme.value = card.theme || "";
-      cfgPunishment.value = card.punishment || "";
-      cfgVibe.value = card.vibe || "custom";
-    }
-
-    function saveCurrentCardFromConfig() {
-      if (lastIndex < 0) {
-        configMessage.textContent = "Roll a card before editing.";
-        return;
-      }
-      const card = categories[lastIndex];
-      card.title = cfgTitle.value.trim() || card.title;
-      card.tagline = cfgTagline.value.trim() || card.tagline;
-      card.theme = cfgTheme.value.trim() || card.theme;
-      card.punishment = cfgPunishment.value.trim() || card.punishment;
-      card.vibe = cfgVibe.value || "custom";
-
-      categories[lastIndex] = card;
-      saveToStorage();
-      applyCardToUI(card);
-
-      configMessage.textContent = "Saved. This card is now updated.";
-      setCardTypeLabel(card);
-      cardInner.classList.add("active");
-    }
-
-    function handleResetConfig() {
-      categories = buildDefaultCategories();
-      resetStorage();
-      configMessage.textContent = "All cards reset to default.";
-      if (lastIndex >= 0) {
-        applyCardToUI(categories[lastIndex]);
-        loadCurrentCardIntoConfig();
-      }
-    }
-
-    configToggle.addEventListener("click", toggleConfigPanel);
-    saveConfigBtn.addEventListener("click", saveCurrentCardFromConfig);
-    resetConfig.addEventListener("click", handleResetConfig);
-
-    // initial counter text
-    cardCounter.textContent = `Card 0 / ${TOTAL_SLOTS}`;
-  </script>
-</body>
-</html>
+      // 51–60
+      {
+        title: "Festival Stage",
+        theme: "A song that would go crazy at a festival.",
+        punishment: "Loser does a tiny jump or bounce like they’re in a crowd.",
+        vibe: "fun"
+      },
+      {
+        title: "Slow Confidence",
+        theme: "A song that makes you feel attractive at a slow tempo.",
+        punishment: "Loser compliments their own best feature out loud.",
+        vibe: "playful"
+      },
+      {
+        title: "Basement Party",
+        theme: "A track you’d hear at a crowded house party.",
+        punishment: "Loser pretends to weave through an imaginary crowd.",
+        vibe: "fun"
+      },
+      {
+        t
