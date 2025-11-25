@@ -2,783 +2,802 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>OBEY – Music Challenge</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
-    rel="stylesheet"
-  />
-
+  <title>OBEY – Dark Music Drinking Game</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover" />
   <style>
     :root {
-      --bg: #05040a;
-      --bg-panel: #0b0814;
-      --bg-card: radial-gradient(circle at 0 0, #231334, #05040a 55%);
-      --accent-pink: #ff4c9a;
-      --accent-violet: #7e4bff;
-      --accent-gold: #f6c76b;
-      --accent-red: #ff3c5f;
-      --accent-blue: #45b4ff;
-      --ink-main: #f8f4ff;
-      --ink-muted: #a598c8;
-      --radius-card: 26px;
+      --bg: #050412;
+      --bg-soft: #120b24;
+      --bg-card: #120b24;
+      --border-glow: #8e5bff;
+      --accent1: #ff4fd8;
+      --accent2: #ff9a4f;
+      --accent3: #4fffe0;
+      --text-main: #f7f2ff;
+      --text-muted: #9a8cc7;
+      --danger: #ff4f7a;
+      --success: #4fe0a3;
+      --radius-lg: 22px;
       --radius-pill: 999px;
-      --shadow-hard: 0 22px 55px rgba(0,0,0,0.9);
-      --shadow-soft: 0 16px 40px rgba(0,0,0,0.75);
+      --shadow-soft: 0 18px 60px rgba(0, 0, 0, 0.7);
       --transition-fast: 150ms ease-out;
-      --transition-med: 230ms ease-out;
+      --transition-med: 220ms ease-out;
+      --font-main: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Roboto", sans-serif;
+      --card-width-max: 520px;
     }
 
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
     }
 
     body {
+      margin: 0;
       min-height: 100vh;
+      font-family: var(--font-main);
+      color: var(--text-main);
       background:
-        radial-gradient(circle at top, #221533 0, #05040a 55%),
-        radial-gradient(circle at bottom, #120a1f 0, #05040a 60%);
+        radial-gradient(circle at top left, #351f7a 0, transparent 55%),
+        radial-gradient(circle at bottom right, #b02f6a 0, transparent 60%),
+        linear-gradient(145deg, #050412, #04030c);
       display: flex;
-      align-items: center;
+      align-items: stretch;
       justify-content: center;
-      color: var(--ink-main);
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-        "Segoe UI", sans-serif;
+      padding: 16px;
     }
 
     .app-shell {
       width: 100%;
-      max-width: 960px;
-      padding: 18px 10px 26px;
-    }
-
-    .frame {
-      background: linear-gradient(140deg, #05040a, #120b1d 60%, #05040a);
+      max-width: 1160px;
+      margin: auto;
+      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.05) 0, transparent 55%),
+                  radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.05) 0, transparent 55%),
+                  linear-gradient(140deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.7));
       border-radius: 30px;
-      padding: 18px 14px 18px;
-      border: 1px solid rgba(255,255,255,0.06);
-      box-shadow: var(--shadow-hard);
-      position: relative;
-      overflow: hidden;
+      padding: 22px 18px 20px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(18px);
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 16px;
     }
 
-    .frame::before {
-      content: "";
-      position: absolute;
-      inset: -35%;
-      background:
-        radial-gradient(circle at 0 0, rgba(255,76,154,0.28), transparent 55%),
-        radial-gradient(circle at 100% 0, rgba(126,75,255,0.32), transparent 50%),
-        radial-gradient(circle at 50% 100%, rgba(246,199,107,0.22), transparent 60%);
-      opacity: 0.85;
-      pointer-events: none;
-      mix-blend-mode: screen;
-    }
-    .frame > * {
-      position: relative;
-      z-index: 1;
+    @media (max-width: 880px) {
+      .app-shell {
+        grid-template-columns: minmax(0, 1fr);
+        padding: 18px 14px 16px;
+      }
     }
 
-    .header {
+    header {
+      grid-column: 1 / -1;
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 10px;
+      gap: 10px 18px;
+      margin-bottom: 8px;
     }
 
-    .title-block h1 {
-      font-family: "Rajdhani", system-ui;
-      font-size: 1.7rem;
-      letter-spacing: 0.28em;
+    .title-block {
+      flex: 1 1 220px;
+    }
+
+    .title {
+      letter-spacing: 0.26em;
+      font-size: 18px;
       text-transform: uppercase;
-      color: var(--accent-gold);
+      color: #ffcf7f;
     }
 
-    .title-block p {
-      margin-top: 3px;
-      font-size: 0.8rem;
-      color: var(--ink-muted);
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
     }
 
-    .badge-row {
+    .chip-row {
       display: flex;
-      flex-direction: column;
+      flex-wrap: wrap;
       gap: 6px;
-      align-items: flex-end;
+      margin-top: 6px;
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-muted);
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .chip strong {
+      color: var(--accent3);
+    }
+
+    .rule-pill {
+      align-self: flex-start;
+      margin-left: auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
     }
 
     .pill {
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.4));
       padding: 6px 12px;
-      border-radius: var(--radius-pill);
-      border: 1px solid rgba(255,255,255,0.16);
-      background: rgba(5,4,15,0.92);
-      color: var(--ink-muted);
-      font-size: 0.72rem;
+      font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 0.14em;
-      display: inline-flex;
+      letter-spacing: 0.08em;
+      display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
+      color: var(--text-main);
     }
 
     .pill-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: var(--accent-pink);
-      box-shadow: 0 0 12px rgba(255,76,154,0.9);
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent1);
+      box-shadow: 0 0 12px rgba(255, 79, 216, 0.9);
     }
 
-    .config-toggle {
-      padding: 4px 12px;
-      border-radius: var(--radius-pill);
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(10,8,22,0.95);
-      color: var(--accent-gold);
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
+    .pill-secondary {
+      border-color: rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      background: rgba(0, 0, 0, 0.4);
     }
 
-    .config-toggle span.icon { font-size: 0.9rem; }
-
-    .config-toggle.active {
-      background: linear-gradient(135deg, rgba(255,76,154,0.25), rgba(126,75,255,0.25));
-      border-color: rgba(255,255,255,0.32);
+    .pill-secondary .pill-dot {
+      background: var(--accent3);
+      box-shadow: 0 0 12px rgba(79, 255, 224, 0.8);
     }
 
-    .rules {
-      background: rgba(5,4,15,0.9);
-      border-radius: 18px;
-      padding: 10px 12px;
-      border: 1px solid rgba(255,255,255,0.08);
-      font-size: 0.8rem;
-      color: var(--ink-muted);
+    /* Layout columns */
+
+    .left-column {
       display: flex;
-      flex-direction: column;
-      gap: 4px;
+      justify-content: center;
     }
 
-    .rules strong { color: var(--ink-main); font-weight: 600; }
-
-    .rules-tags {
-      display: flex;
-      gap: 6px;
-      margin-top: 3px;
-      flex-wrap: wrap;
-    }
-
-    .rules-tag {
-      padding: 3px 8px;
-      border-radius: var(--radius-pill);
-      background: rgba(22,14,40,0.95);
-      border: 1px solid rgba(255,255,255,0.12);
-      font-size: 0.7rem;
-      color: var(--ink-muted);
-    }
-
-    .main-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);
-      gap: 14px;
-      margin-top: 14px;
-      align-items: flex-start;
-    }
-
-    @media (max-width: 720px) {
-      .main-layout {
-        grid-template-columns: minmax(0,1fr);
-      }
-      .header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .badge-row { align-items: flex-start; }
-    }
-
-    .card-shell { display: flex; justify-content: center; }
-
-    .card-wrapper {
-      perspective: 1400px;
-      width: min(420px, 100%);
-    }
-
-    .card {
-      position: relative;
+    .game-card {
       width: 100%;
-      aspect-ratio: 3 / 4.2;
-      border-radius: var(--radius-card);
-      background: var(--bg-card);
-      border: 2px solid rgba(255,255,255,0.16);
-      box-shadow: var(--shadow-soft);
-      padding: 16px 14px;
+      max-width: var(--card-width-max);
+      background: radial-gradient(circle at 10% 0, rgba(255, 255, 255, 0.04), transparent 60%),
+                  radial-gradient(circle at 100% 100%, rgba(255, 0, 150, 0.3), transparent 65%),
+                  linear-gradient(145deg, #0b071a, #0c0618);
+      border-radius: 30px;
+      padding: 18px 20px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow:
+        0 0 0 1px rgba(140, 95, 255, 0.3),
+        0 0 25px rgba(140, 95, 255, 0.45),
+        0 24px 60px rgba(0, 0, 0, 0.85);
+      position: relative;
       overflow: hidden;
-      transform-style: preserve-3d;
-      transition:
-        transform var(--transition-med),
-        box-shadow var(--transition-med),
-        border-color var(--transition-med),
-        background 260ms ease-out;
     }
 
-    .card::before {
+    .game-card::before {
       content: "";
       position: absolute;
-      inset: -40%;
-      background:
-        radial-gradient(circle at 0 0, rgba(255,76,154,0.25), transparent 55%),
-        radial-gradient(circle at 100% 0, rgba(126,75,255,0.25), transparent 55%),
-        radial-gradient(circle at 50% 100%, rgba(246,199,107,0.18), transparent 60%);
-      mix-blend-mode: screen;
+      inset: 1px;
+      border-radius: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
       pointer-events: none;
-      opacity: 0.9;
     }
 
-    .card.glow-pink { border-color: rgba(255,76,154,0.9); box-shadow: 0 0 22px rgba(255,76,154,0.7), var(--shadow-soft); }
-    .card.glow-violet { border-color: rgba(126,75,255,0.9); box-shadow: 0 0 22px rgba(126,75,255,0.7), var(--shadow-soft); }
-    .card.glow-gold { border-color: rgba(246,199,107,0.95); box-shadow: 0 0 22px rgba(246,199,107,0.7), var(--shadow-soft); }
-    .card.glow-red { border-color: rgba(255,60,95,0.9); box-shadow: 0 0 22px rgba(255,60,95,0.7), var(--shadow-soft); }
-    .card.glow-blue { border-color: rgba(69,180,255,0.9); box-shadow: 0 0 22px rgba(69,180,255,0.7), var(--shadow-soft); }
-
-    .card-content {
-      position: relative;
-      z-index: 1;
-      height: 100%;
+    .card-header-row {
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .card-top {
-      display: flex;
-      justify-content: space-between;
       align-items: center;
-      font-size: 0.78rem;
-      color: var(--ink-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
     }
 
-    .card-tag {
-      padding: 4px 10px;
-      border-radius: var(--radius-pill);
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(7,6,20,0.9);
-      font-size: 0.68rem;
+    .card-status {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--accent3);
     }
 
-    .card-type-label {
-      font-family: "Rajdhani", system-ui;
-      font-size: 0.78rem;
+    .card-count {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .card-type-tag {
+      font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: var(--accent-blue);
+      letter-spacing: 0.14em;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      color: #fce9ff;
+      background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.24), rgba(0, 0, 0, 0.7));
     }
 
     .card-title {
-      margin-top: 14px;
-      font-family: "Rajdhani", system-ui;
-      font-size: 1.2rem;
-      letter-spacing: 0.16em;
+      font-size: 18px;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      text-align: center;
-      font-weight: 700;
+      margin-bottom: 8px;
+      color: #ffffff;
     }
 
-    .card-divider {
-      height: 1px;
-      margin: 14px 0 10px;
-      background: linear-gradient(
-        90deg,
-        rgba(255,76,154,0.6),
-        rgba(126,75,255,0.8),
-        rgba(246,199,107,0.75)
-      );
-      opacity: 0.9;
+    .card-body {
+      max-height: 260px;
+      overflow: hidden auto;
+      padding-right: 8px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text-main);
     }
 
     .card-section-label {
-      font-size: 0.7rem;
+      font-size: 11px;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      letter-spacing: 0.2em;
-      color: var(--ink-muted);
+      color: var(--accent2);
       margin-bottom: 4px;
     }
 
     .card-text {
-      font-size: 0.9rem;
-      line-height: 1.4;
-    }
-
-    .card-obey {
-      font-size: 0.9rem;
-      line-height: 1.4;
-      color: var(--accent-gold);
+      font-size: 14px;
+      margin-bottom: 10px;
     }
 
     .card-bonus {
-      font-size: 0.84rem;
-      margin-top: 4px;
-      color: var(--accent-pink);
-    }
-
-    .status-challenge {
-      font-size: 0.72rem;
-      color: var(--ink-muted);
       margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.1);
+      font-size: 13px;
+      color: var(--accent1);
     }
 
-    .controls {
+    .card-footer {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .card-vibe {
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .right-column {
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
 
-    .mode-row {
+    .mode-bar {
       display: flex;
-      gap: 8px;
       flex-wrap: wrap;
+      gap: 8px;
     }
 
-    .mode-pill {
-      flex: 1;
-      min-width: 80px;
+    .mode-btn {
+      flex: 1 1 90px;
+      min-width: 0;
       border-radius: var(--radius-pill);
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(6,5,16,0.95);
-      color: var(--ink-muted);
-      font-size: 0.72rem;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(0, 0, 0, 0.5);
+      color: var(--text-muted);
+      font-size: 12px;
+      padding: 7px 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .mode-btn span.icon {
+      font-size: 14px;
+    }
+
+    .mode-btn.active {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.7);
+      background: radial-gradient(circle at top, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0.8));
+      box-shadow: 0 0 12px rgba(140, 95, 255, 0.8);
+      transform: translateY(-1px);
+    }
+
+    .mode-btn.xxx.active {
+      box-shadow: 0 0 18px rgba(255, 79, 145, 0.9);
+      border-color: rgba(255, 79, 145, 0.9);
+    }
+
+    .mode-btn.first-date.active {
+      box-shadow: 0 0 14px rgba(79, 255, 224, 0.9);
+      border-color: rgba(79, 255, 224, 0.9);
+    }
+
+    .mode-btn.mixed.active {
+      box-shadow: 0 0 14px rgba(255, 154, 79, 0.9);
+      border-color: rgba(255, 154, 79, 0.9);
+    }
+
+    .controls-panel {
+      margin-top: 4px;
+      background: linear-gradient(145deg, rgba(9, 4, 22, 0.9), rgba(12, 6, 32, 0.96));
+      border-radius: 22px;
+      padding: 12px 12px 11px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .btn {
+      flex: 1 1 120px;
+      border-radius: var(--radius-pill);
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      letter-spacing: 0.16em;
-      padding: 7px 9px;
+      border: none;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      cursor: pointer;
-      transition:
-        background var(--transition-fast),
-        color var(--transition-fast),
-        box-shadow var(--transition-fast),
-        border-color var(--transition-fast);
+      background: radial-gradient(circle at top left, var(--accent1), var(--accent2));
+      color: #fff;
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.75), 0 0 22px rgba(140, 95, 255, 0.9);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast), opacity var(--transition-fast);
     }
 
-    .mode-pill span.icon { font-size: 0.86rem; }
-
-    .mode-pill.active {
-      background: linear-gradient(135deg, rgba(255,76,154,0.32), rgba(126,75,255,0.32));
-      border-color: rgba(246,199,107,0.6);
-      color: var(--ink-main);
-      box-shadow: 0 10px 22px rgba(0,0,0,0.85);
+    .btn.secondary {
+      background: radial-gradient(circle at top, #22123f, #0a041a);
+      color: var(--text-main);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
-    .buttons-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 4px;
-    }
-
-    .btn {
+    .btn-outline {
+      flex: 0 0 auto;
+      padding: 8px 12px;
       border-radius: var(--radius-pill);
-      border: none;
-      padding: 11px 16px;
-      font-size: 0.88rem;
-      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(0, 0, 0, 0.5);
+      color: var(--text-main);
+      font-size: 12px;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      letter-spacing: 0.14em;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition:
-        transform var(--transition-fast),
-        box-shadow var(--transition-fast),
-        filter var(--transition-fast),
-        opacity var(--transition-fast);
-      white-space: nowrap;
-      font-family: "Rajdhani", system-ui;
+      gap: 6px;
+      transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
     }
 
-    .btn-primary {
-      flex: 1 1 140px;
-      color: #05040a;
-      background: linear-gradient(135deg, var(--accent-pink), var(--accent-violet));
-      box-shadow: 0 12px 28px rgba(0,0,0,0.9);
+    .btn:active,
+    .btn-outline:active {
+      transform: translateY(1px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.85);
+      filter: brightness(0.9);
     }
 
-    .btn-ghost {
-      flex: 0 0 auto;
-      color: var(--ink-main);
-      background: rgba(5,4,15,0.95);
-      border: 1px solid rgba(255,255,255,0.18);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.75);
-    }
-
-    .btn:disabled {
-      opacity: 0.45;
+    .btn:disabled,
+    .btn-outline:disabled {
+      opacity: 0.4;
       cursor: default;
-      transform: none;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.6);
+      box-shadow: none;
     }
 
-    .btn:active:not(:disabled) {
-      transform: translateY(1px) scale(0.98);
-      box-shadow: 0 8px 18px rgba(0,0,0,0.9);
-      filter: brightness(0.96);
-    }
-
-    .status-row {
+    .mode-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
       gap: 8px;
-      font-size: 0.78rem;
-      color: var(--ink-muted);
+      align-items: center;
     }
 
-    .status-row strong { color: var(--accent-gold); }
+    .deck-counts {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
 
-    .status-pill {
-      padding: 5px 11px;
-      border-radius: var(--radius-pill);
-      background: rgba(5,4,15,0.95);
-      border: 1px solid rgba(255,255,255,0.16);
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
+    .deck-counts span {
+      color: var(--accent3);
     }
 
     /* Config panel */
 
-    .config-panel {
-      margin-top: 10px;
-      background: rgba(5,4,15,0.95);
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.16);
-      padding: 10px 12px 12px;
-      display: none;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .config-panel.active { display: flex; }
-
-    .config-header {
+    .config-toggle-wrap {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.78rem;
-      color: var(--ink-muted);
-    }
-
-    .config-header strong { color: var(--accent-gold); }
-
-    .config-deck-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
+      justify-content: flex-end;
       margin-top: 4px;
     }
 
-    .config-deck-row select,
-    .config-deck-row input {
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(8,6,20,0.98);
-      color: var(--ink-main);
-      font-size: 0.78rem;
-      padding: 5px 8px;
-      min-height: 30px;
-    }
-
-    .config-nav-buttons {
-      display: flex;
-      gap: 6px;
-    }
-
-    .btn-mini {
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.25);
-      background: rgba(12,10,26,0.95);
-      color: var(--ink-main);
-      font-size: 0.7rem;
+    .config-pill {
+      font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
-      padding: 4px 8px;
+      letter-spacing: 0.14em;
+      border-radius: 999px;
+      padding: 6px 11px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.7));
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
       cursor: pointer;
     }
 
-    .btn-mini.primary {
-      border-color: var(--accent-violet);
-      background: linear-gradient(135deg, rgba(126,75,255,0.4), rgba(255,76,154,0.2));
+    .config-pill span.icon {
+      font-size: 13px;
     }
 
-    .config-grid {
-      display: grid;
-      grid-template-columns: minmax(0,1fr);
-      gap: 6px;
-      margin-top: 6px;
+    .config-panel {
+      margin-top: 10px;
+      border-radius: 20px;
+      background: rgba(5, 1, 20, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 10px;
+      display: none;
+      max-height: 340px;
+      overflow: hidden;
     }
 
-    .config-field {
+    .config-panel.open {
+      display: flex;
+      gap: 10px;
+    }
+
+    .config-left {
+      width: 40%;
+      min-width: 0;
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      padding-right: 8px;
       display: flex;
       flex-direction: column;
-      gap: 2px;
-    }
-
-    .config-field label {
-      font-size: 0.72rem;
-      color: var(--ink-muted);
-    }
-
-    .config-field input,
-    .config-field textarea,
-    .config-field select {
-      width: 100%;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.22);
-      background: rgba(8,6,20,0.98);
-      color: var(--ink-main);
-      font-size: 0.8rem;
-      padding: 6px 8px;
-      resize: vertical;
-      min-height: 30px;
-    }
-
-    .config-field textarea {
-      min-height: 42px;
-      max-height: 130px;
-    }
-
-    .config-buttons {
-      display: flex;
-      justify-content: flex-end;
       gap: 8px;
-      margin-top: 6px;
     }
 
-    .config-message {
-      font-size: 0.72rem;
-      color: var(--accent-gold);
-      min-height: 14px;
+    .config-right {
+      width: 60%;
+      min-width: 0;
+      padding-left: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
-    @media (max-width: 600px) {
-      .frame { padding: 16px 12px 18px; }
-      .card { padding: 14px 12px; }
-      .card-title { font-size: 1.06rem; letter-spacing: 0.14em; }
-      .buttons-row { flex-direction: column; }
-      .btn-ghost { width: 100%; }
+    .config-heading {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
     }
 
-    /* Card animations */
-
-    .card-draw {
-      animation: cardDraw 0.6s ease-out;
+    .config-select-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
     }
-    @keyframes cardDraw {
-      0% {
-        transform: translateY(20px) scale(0.9) rotate3d(1,0,0,18deg);
-        opacity: 0;
+
+    .select {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      background: rgba(12, 6, 35, 0.9);
+      color: var(--text-main);
+      font-size: 12px;
+      padding: 5px 9px;
+    }
+
+    .config-card-list {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(0, 0, 0, 0.7);
+      padding: 4px;
+      font-size: 11px;
+    }
+
+    .config-card-item {
+      padding: 6px 7px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+    }
+
+    .config-card-item span.idx {
+      opacity: 0.7;
+      min-width: 22px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .config-card-item span.title {
+      flex: 1;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .config-card-item span.vibe-chip {
+      padding: 2px 5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 10px;
+    }
+
+    .config-card-item.active {
+      background: linear-gradient(135deg, rgba(140, 95, 255, 0.4), rgba(255, 79, 176, 0.5));
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .config-card-item.inactive {
+      opacity: 0.5;
+    }
+
+    .config-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .config-mini-btn {
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      background: rgba(0, 0, 0, 0.7);
+      color: var(--text-main);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .config-mini-btn.danger {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .config-form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .config-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .input,
+    .textarea {
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(3, 0, 18, 0.9);
+      color: var(--text-main);
+      font-size: 12px;
+      padding: 5px 8px;
+      font-family: var(--font-main);
+    }
+
+    .textarea {
+      min-height: 56px;
+      resize: vertical;
+    }
+
+    .config-bottom-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .config-checkbox {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .config-save-btn {
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.18), rgba(0, 0, 0, 0.8));
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .config-info {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    @media (max-width: 880px) {
+      .config-panel.open {
+        flex-direction: column;
+        max-height: 480px;
       }
-      40% {
-        transform: translateY(-6px) scale(1.03) rotate3d(1,0,0,-8deg);
-        opacity: 1;
+      .config-left {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-right: 0;
+        padding-bottom: 6px;
       }
-      100% {
-        transform: translateY(0) scale(1) rotate3d(0,0,0,0deg);
-        opacity: 1;
+      .config-right {
+        width: 100%;
+        padding-left: 0;
+        padding-top: 4px;
       }
-    }
-
-    .card-shuffle {
-      animation: cardShuffle 0.5s ease-in-out;
-    }
-    @keyframes cardShuffle {
-      0% { transform: translateX(0) rotate(0deg); }
-      25% { transform: translateX(-6px) rotate(-2deg); }
-      50% { transform: translateX(6px) rotate(2deg); }
-      75% { transform: translateX(-3px) rotate(-1deg); }
-      100% { transform: translateX(0) rotate(0deg); }
     }
   </style>
 </head>
 <body>
   <div class="app-shell">
-    <div class="frame">
-      <div class="header">
-        <div class="title-block">
-          <h1>OBEY</h1>
-          <p>Dark music challenge • 2 players • drink, guess, obey the punishment.</p>
+    <header>
+      <div class="title-block">
+        <div class="title">OBEY</div>
+        <div class="subtitle">Dark music challenge • 2 players • drink, guess, obey the punishment.</div>
+        <div class="chip-row">
+          <div class="chip"><strong>How to play:</strong> Roll Challenge, both pick a song that fits the mood, play the first 15 seconds. If your opponent recognises your track (artist or title) in that time, you lose.</div>
+          <div class="chip">Then roll a <strong>Punishment</strong> and do exactly what the card demands.</div>
         </div>
-        <div class="badge-row">
-          <div class="pill">
-            <span class="pill-dot"></span>
-            <span>Play 15 sec • guess within 15 sec</span>
+      </div>
+      <div class="rule-pill">
+        <div class="pill">
+          <div class="pill-dot"></div>
+          <span>Play 15 sec • Guess within 15 sec</span>
+        </div>
+        <div class="pill pill-secondary">
+          <div class="pill-dot"></div>
+          <span>Drink responsibly</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- LEFT: main card -->
+    <div class="left-column">
+      <div class="game-card" id="gameCard">
+        <div class="card-header-row">
+          <div>
+            <div class="card-status" id="cardStatus">IDLE</div>
+            <div class="card-type-tag" id="cardTypeTag">PRESS START GAME</div>
           </div>
-          <button class="config-toggle" id="configToggle">
-            <span class="icon">⚙️</span>
-            <span>Config</span>
+          <div class="card-count" id="cardCount">0 / 0</div>
+        </div>
+
+        <div class="card-body" id="cardBody">
+          <div class="card-section-label">Info</div>
+          <div class="card-text" id="cardMainText">
+            Choose a mode, shuffle the decks, then roll a challenge. Once you know who lost the song battle, roll a punishment and obey.
+          </div>
+          <div class="card-bonus" id="cardBonusText">
+            First Date keeps it playful. XXX mode goes darker: more teasing, more contact, more clothing at risk. Mixed mode does exactly what it sounds like.
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="card-vibe" id="cardVibe">Vibe: —</div>
+          <div id="cardFooterMeta">Song battle not started.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: controls, modes, config -->
+    <div class="right-column">
+      <div class="mode-bar">
+        <button class="mode-btn first-date active" data-mode="first">
+          <span class="icon">💫</span><span>First Date</span>
+        </button>
+        <button class="mode-btn mixed" data-mode="mixed">
+          <span class="icon">🃏</span><span>Mixed</span>
+        </button>
+        <button class="mode-btn xxx" data-mode="xxx">
+          <span class="icon">🔥</span><span>XXX</span>
+        </button>
+      </div>
+
+      <div class="controls-panel">
+        <div class="button-row">
+          <button class="btn secondary" id="startGameBtn">Start Game</button>
+          <button class="btn" id="rollChallengeBtn" disabled>Roll Challenge</button>
+        </div>
+        <div class="button-row">
+          <button class="btn secondary" id="rollPunishmentBtn" disabled>Roll Punishment</button>
+          <button class="btn-outline" id="reshuffleBtn">
+            <span>🔄</span><span>Reset decks</span>
           </button>
         </div>
-      </div>
-
-      <div class="rules">
-        <div>
-          <strong>How to play:</strong>
-          Hit <strong>Roll Challenge</strong>, both pick a song that fits the mood, and play the first
-          <strong>15 seconds</strong> of each track.
-        </div>
-        <div>
-          If your opponent recognises your song (artist or title) during those 15 seconds, <strong>you lose</strong>.
-          Then hit <strong>Roll Punishment</strong> and obey whatever the card demands.
-        </div>
-        <div class="rules-tags">
-          <div class="rules-tag">No repeats until each deck is empty</div>
-          <div class="rules-tag">First Date • XXX • Mixed modes</div>
-          <div class="rules-tag">Drink responsibly</div>
+        <div class="mode-hint">
+          <div id="modeHintText">Mode: First Date. Press Start Game to shuffle decks.</div>
+          <div class="deck-counts" id="deckCounts"></div>
         </div>
       </div>
 
-      <div class="main-layout">
-        <div class="card-shell">
-          <div class="card-wrapper">
-            <div class="card glow-violet" id="card">
-              <div class="card-content">
-                <div>
-                  <div class="card-top">
-                    <span class="card-type-label" id="cardTypeLabel">Idle</span>
-                    <span class="card-tag" id="cardMeta">0 / 0</span>
-                  </div>
-                  <div class="card-title" id="cardTitle">
-                    Press Start Game
-                  </div>
-                  <div class="card-divider"></div>
+      <div class="config-toggle-wrap">
+        <button class="config-pill" id="configToggle">
+          <span class="icon">⚙️</span><span>Config mode</span>
+        </button>
+      </div>
 
-                  <div>
-                    <div class="card-section-label" id="cardSectionHeading">Info</div>
-                    <div class="card-text" id="cardTheme">
-                      Choose a mode, shuffle the decks, then roll a challenge. Once you know who lost the song battle, roll a punishment and obey.
-                    </div>
-                  </div>
-
-                  <div class="card-bottom">
-                    <div class="card-section-label" id="cardObeyHeading">Obey</div>
-                    <div class="card-obey" id="cardObey">
-                      First date mode keeps it playful. XXX mode goes darker: more contact, more teasing, more clothing at risk. Mixed does exactly what it sounds like.
-                    </div>
-                    <div class="card-bonus" id="cardBonus" style="display:none;"></div>
-                  </div>
-                </div>
-
-                <div class="status-challenge" id="lastChallengeText"></div>
-              </div>
-            </div>
+      <div class="config-panel" id="configPanel">
+        <div class="config-left">
+          <div class="config-heading">Decks & cards</div>
+          <div class="config-select-row">
+            <select class="select" id="deckSelect">
+              <option value="challenges">Challenges</option>
+              <option value="pun_first">Punishments – First Date</option>
+              <option value="pun_xxx">Punishments – XXX</option>
+            </select>
+          </div>
+          <div class="config-card-list" id="cardList">
+            <!-- populated by JS -->
+          </div>
+          <div class="config-actions">
+            <button class="config-mini-btn" id="addCardBtn">+ Add card</button>
+            <button class="config-mini-btn" id="duplicateCardBtn">⧉ Duplicate</button>
+            <button class="config-mini-btn danger" id="deleteCardBtn">✖ Delete</button>
           </div>
         </div>
-
-        <div class="controls">
-          <div class="mode-row">
-            <button class="mode-pill active" data-mode="first" id="modeFirst">
-              <span class="icon">💫</span>
-              <span>First Date</span>
-            </button>
-            <button class="mode-pill" data-mode="mixed" id="modeMixed">
-              <span class="icon">♟️</span>
-              <span>Mixed</span>
-            </button>
-            <button class="mode-pill" data-mode="xxx" id="modeXXX">
-              <span class="icon">🔥</span>
-              <span>XXX</span>
-            </button>
+        <div class="config-right">
+          <div class="config-heading">Edit card</div>
+          <div class="config-form-row">
+            <label class="config-label" for="cardTitleInput">Title</label>
+            <input class="input" id="cardTitleInput" placeholder="Card title" />
           </div>
-
-          <div class="buttons-row">
-            <button class="btn btn-ghost" id="startBtn">Start Game</button>
-            <button class="btn btn-primary" id="challengeBtn" disabled>🎴 Roll Challenge</button>
-            <button class="btn btn-primary" id="punishBtn" disabled>💣 Roll Punishment</button>
+          <div class="config-form-row">
+            <label class="config-label" for="cardMainInput">Main text</label>
+            <textarea class="textarea" id="cardMainInput" placeholder="What the challenge or punishment actually is."></textarea>
           </div>
-
-          <div class="status-row">
-            <span id="statusText">
-              Pick a mode, then press <strong>Start Game</strong> to shuffle all decks.
-            </span>
-            <span class="status-pill" id="remainingText">Challenges: 0 • Pun: 0</span>
+          <div class="config-form-row">
+            <label class="config-label" for="cardBonusInput">Bonus (optional)</label>
+            <textarea class="textarea" id="cardBonusInput" placeholder="Extra twist if they want to make it worse for themselves. Leave blank for none."></textarea>
           </div>
-
-          <!-- CONFIG PANEL -->
-          <div class="config-panel" id="configPanel">
-            <div class="config-header">
-              <span id="configCardLabel">Config: choose a deck</span>
-              <span id="configCountLabel"></span>
-            </div>
-
-            <div class="config-deck-row">
-              <label for="cfgDeckType" style="font-size:0.72rem;color:var(--ink-muted);">Deck</label>
-              <select id="cfgDeckType">
-                <option value="challenge">Challenges</option>
-                <option value="first">Punishments – First Date</option>
-                <option value="xxx">Punishments – XXX</option>
-              </select>
-
-              <div class="config-nav-buttons">
-                <button class="btn-mini" id="cfgPrev">&lt;</button>
-                <button class="btn-mini" id="cfgNext">&gt;</button>
-              </div>
-
-              <div style="display:flex;align-items:center;gap:4px;">
-                <span style="font-size:0.72rem;color:var(--ink-muted);">Go to</span>
-                <input id="cfgIndexInput" type="number" min="1" style="width:58px;" />
-                <button class="btn-mini" id="cfgGo">Go</button>
-              </div>
-            </div>
-
-            <div class="config-grid">
-              <div class="config-field">
-                <label for="cfgTitle">Title</label>
-                <input id="cfgTitle" type="text" placeholder="Card title" />
-              </div>
-              <div class="config-field">
-                <label for="cfgBody">Main text (theme or punishment)</label>
-                <textarea id="cfgBody" placeholder="Describe the song theme or punishment"></textarea>
-              </div>
-              <div class="config-field">
-                <label for="cfgBonus">Bonus (optional – leave empty to remove)</label>
-                <textarea id="cfgBonus" placeholder="Extra dare if they want to make it worse for themselves"></textarea>
-              </div>
-              <div class="config-field">
-                <label for="cfgVibe">Vibe tag</label>
-                <select id="cfgVibe">
-                  <option value="fun">Fun</option>
-                  <option value="dark">Dark</option>
-                  <option value="flirty">Flirty</option>
-                  <option value="chaos">Chaos</option>
-                  <option value="chill">Chill</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="config-buttons">
-              <button class="btn-mini" id="cfgReset">Reset all decks</button>
-              <button class="btn-mini primary" id="cfgSave">Save card</button>
-            </div>
-            <div class="config-message" id="configMessage"></div>
+          <div class="config-form-row">
+            <label class="config-label" for="cardVibeInput">Vibe tag</label>
+            <input class="input" id="cardVibeInput" placeholder="Fun, Flirty, Chaos, Dark, etc." />
+          </div>
+          <div class="config-bottom-row">
+            <label class="config-checkbox">
+              <input type="checkbox" id="cardActiveInput" checked />
+              <span>Include this card when shuffling</span>
+            </label>
+            <button class="config-save-btn" id="saveCardBtn">Save card</button>
+          </div>
+          <div class="config-info" id="configInfo">
+            Editing card —. Changes save to this device only. Resetting decks will restore built-ins but keep your edits separate.
           </div>
         </div>
       </div>
@@ -786,779 +805,658 @@
   </div>
 
   <script>
-    /*
-      OBEY – multi-mode version
-      - Modes: first, mixed, xxx
-      - Shared challenge deck
-      - Separate punishment decks for first + xxx, mixed = combined view
-      - 2-step flow: roll challenge, then roll punishment
-      - Config: edit any card in any deck, persisted to localStorage
-    */
+    // ---------- Storage keys ----------
+    const STORAGE_KEYS = {
+      challenges: "obey_challenges_v2",
+      punFirst: "obey_pun_first_v2",
+      punXXX: "obey_pun_xxx_v2"
+    };
 
-    const STORAGE_CHALLENGE = "obey_challenges_v2";
-    const STORAGE_PUN_FIRST = "obey_pun_first_v2";
-    const STORAGE_PUN_XXX   = "obey_pun_xxx_v2";
-
-    // ---- Default decks ----
-    // Short & tight so you can tweak; all editable in Config.
+    // ---------- Default decks ----------
+    // NOTE: These are original prompts written for OBEY, but inspired by adult truth/dare style games.
 
     const defaultChallenges = [
-      { title: "Twerk Trigger", theme: "Play a song that makes hips move before the hook even hits.", vibe: "fun" },
-      { title: "Villain Entrance", theme: "A track you’d use walking into a room you plan to ruin.", vibe: "dark" },
-      { title: "Lip-Bite Energy", theme: "A song that feels flirty without being corny. Neck heat only.", vibe: "flirty" },
-      { title: "Midnight Drive", theme: "Headlights, empty road, someone you’re not done with yet.", vibe: "chill" },
-      { title: "Brat Anthem", theme: "A track with pure brat energy. Petty and proud.", vibe: "chaos" },
-      { title: "Slow Burn Touch", theme: "Soft start, but you know it’s going somewhere dangerous.", vibe: "flirty" },
-      { title: "Club Bathroom", theme: "Something you’d hear blasting from the wildest stall at 1AM.", vibe: "fun" },
-      { title: "First Crush Flashback", theme: "A song that drags you back to your early crush days.", vibe: "chill" },
-      { title: "Happy Drunk", theme: "The song that hits right when the buzz turns golden.", vibe: "fun" },
-      { title: "Unskippable", theme: "A track you refuse to skip, no matter what.", vibe: "dark" },
-      { title: "Sneaky Link", theme: "A soundtrack for sneaking out and hoping no one hears.", vibe: "flirty" },
-      { title: "Soft Chaos", theme: "Pretty sound, unhinged lyrics.", vibe: "chaos" },
-      { title: "Gym PR", theme: "A track that would push you through a personal record.", vibe: "dark" },
-      { title: "Slow Grind Classic", theme: "A throwback slow jam that demands bodies close.", vibe: "flirty" },
-      { title: "Kitchen Dance", theme: "Something you’d dance to while pretending to cook.", vibe: "fun" },
-      { title: "Movie Trailer", theme: "Song that could score the trailer for your villain era.", vibe: "dark" },
-      { title: "Tease Track", theme: "A song that sounds like it’s about to cross a line, but doesn’t.", vibe: "flirty" },
-      { title: "Walk of Shame", theme: "The morning-after soundtrack for a chaotic night.", vibe: "chaos" },
-      { title: "Rooftop Night", theme: "A track for a rooftop at 2AM when nobody wants to go home.", vibe: "chill" },
-      { title: "Playlist Red Flag", theme: "A song that would worry you if it’s someone’s #1.", vibe: "chaos" },
-      { title: "Bedroom DJ", theme: "A song you’d risk putting on in a private setting.", vibe: "flirty" },
-      { title: "Festival Stage", theme: "A track that would send a festival crowd into orbit.", vibe: "fun" },
-      { title: "Background Crush", theme: "A song that could loop quietly while flirting happens over it.", vibe: "flirty" },
-      { title: "Afterparty Glow", theme: "A low, warm track once the loud people leave.", vibe: "chill" },
-      { title: "Chaos Romance", theme: "A song that sounds like a messy situationship.", vibe: "dark" },
-      { title: "Shower Concert", theme: "The track you’d absolutely scream in the shower.", vibe: "fun" },
-      { title: "Boss Walk", theme: "The sound of walking into a room you already own.", vibe: "dark" },
-      { title: "Stay Over", theme: "Something that might accidentally convince someone not to leave.", vibe: "flirty" },
-      { title: "Low-Key Flex", theme: "A song that quietly shows off your taste.", vibe: "chill" },
-      { title: "Dance Circle", theme: "Track that belongs at the center of a dance circle.", vibe: "fun" },
-      { title: "Text at 2AM", theme: "Song playing while you type something you probably shouldn’t send.", vibe: "flirty" },
-      { title: "Headphones Only", theme: "Hits way harder in headphones than speakers.", vibe: "chill" },
-      { title: "Bad Decisions", theme: "The soundtrack of someone saying “one more shot.”", vibe: "chaos" },
-      { title: "Soft Threat", theme: "Calm voice, dangerous energy.", vibe: "dark" },
-      { title: "Flirt Playlist", theme: "A song you’d sneak into a playlist for someone you like.", vibe: "flirty" },
-      { title: "Credits Roll", theme: "Track that should play over the end credits of tonight.", vibe: "chill" }
+      { title: "Twerk Trigger", main: "Play a song that makes hips move before the hook even hits.", bonus: "Extra dare if they really hate dancing but still have to sit there and listen.", vibe: "Fun", active: true },
+      { title: "Makeout Movie Scene", main: "Play a song that would start playing if a movie version of you two suddenly started making out on the couch.", bonus: "Loser has to explain the exact moment in the scene when the kiss would happen.", vibe: "Flirty", active: true },
+      { title: "Slow Burn", main: "Pick a slow track that still feels filthy somehow.", bonus: "Loser must say which line in the song is the dirtiest.", vibe: "Dark", active: true },
+      { title: "Toxic Ex Anthem", main: "Play a song that belongs on a toxic ex playlist.", bonus: "Loser briefly describes the situation that song reminds them of.", vibe: "Chaos", active: true },
+      { title: "Bedroom Lights", main: "Play the first track you’d throw on if the lights dimmed and you wanted things to escalate.", bonus: "Loser has to say whether they’d actually use this song tonight or not.", vibe: "Flirty", active: true },
+      { title: "Shameless Thirst Trap", main: "Play a song you’d use for a shameless thirst-trap video.", bonus: "Loser must describe what the video would look like in one sentence.", vibe: "Fun", active: true },
+      { title: "Strip Club Energy", main: "Play a song that could absolutely be played in a strip club.", bonus: "Loser must say what their stage name would be.", vibe: "XXX-adjacent", active: true },
+      { title: "Petty Revenge", main: "Play a song you’d post on your story to be petty at someone who hurt your feelings.", bonus: "Loser has to admit who it’d be aimed at (role: ex, situationship, crush, etc. – no real names).", vibe: "Drama", active: true },
+      { title: "Midnight Drive", main: "Pick a song that would play in the car on the way back from a date where the tension is insane.", bonus: "Loser has to say whether the car ride ends with a kiss or not.", vibe: "Flirty", active: true },
+      { title: "Hands On The Wall", main: "Play a song that makes you think of someone being pushed up against a wall.", bonus: "Loser briefly describes the outfit in that mental picture.", vibe: "Dark", active: true },
+      { title: "Bedroom POV", main: "Pick a track that sounds like it’s playing from a speaker on the nightstand while hands are everywhere.", bonus: "Loser has to admit if they’ve ever actually used music during sex.", vibe: "XXX-adjacent", active: true },
+      { title: "Kiss Me Or Else", main: "Play a song that basically forces a kiss by the chorus.", bonus: "Loser has to say whether they’d kiss fast or stall on purpose.", vibe: "Flirty", active: true },
+      { title: "Tension In Public", main: "Play a track that would be playing while you’re out together pretending to behave.", bonus: "Loser says where they’d sneak a quick kiss in public.", vibe: "Fun", active: true },
+      { title: "Neon Room", main: "Pick a song that sounds like a dark club with purple lights and way too much eye contact.", bonus: "Loser has to choose: corner booth or dance floor?", vibe: "Dark", active: true },
+      { title: "Take It Off (Almost)", main: "Play a track that makes you want to pull at your clothes but not quite take them off yet.", bonus: "Loser must say what they’d take off first.", vibe: "XXX-adjacent", active: true },
+      { title: "Dirty Bassline", main: "Pick a song where the bassline alone feels suggestive.", bonus: "Loser has to keep quiet and just move to the bass for 5 seconds.", vibe: "Fun", active: true },
+      { title: "Possessive Lyrics", main: "Play a song with lyrics that sound dangerously possessive but low-key hot.", bonus: "Loser decides if they like being claimed or not.", vibe: "Dark", active: true },
+      { title: "Glow-Up Energy", main: "Play a song that screams ‘you didn’t deserve me anyway.’", bonus: "Loser has to say whether they’ve ever done a glow-up out of spite.", vibe: "Fun", active: true },
+      { title: "Kissing Booth", main: "Pick a song that feels like standing in a kissing booth with a line waiting.", bonus: "Loser must say what kind of kiss they’re best at.", vibe: "Flirty", active: true },
+      { title: "Hands On Hips", main: "Play a song that makes you instantly imagine grabbing someone by the waist.", bonus: "Loser has to show exactly where hands should go (over clothes).", vibe: "Flirty", active: true },
+      { title: "Sneaky Link Anthem", main: "Pick a track that belongs on a sneaky link playlist.", bonus: "Loser admits if they’ve ever had one.", vibe: "Dark", active: true },
+      { title: "Night Before Regret", main: "Play a song you would’ve put on the night before a bad decision.", bonus: "Loser says whether they’d repeat that decision today.", vibe: "Chaos", active: true },
+      { title: "Slow Grind", main: "Pick a song that’s impossible not to grind to.", bonus: "Loser has to move to the beat for one bar while seated.", vibe: "XXX-adjacent", active: true },
+      { title: "Shower Thoughts", main: "Play a song you’d blast in the shower thinking about someone you shouldn’t.", bonus: "Loser has to say whether that person knows they were thought about.", vibe: "Dark", active: true },
+      { title: "Tease & Deny", main: "Pick a track that sounds like heavy teasing with no relief… yet.", bonus: "Loser must say which lyric would make them cave.", vibe: "Flirty", active: true },
+      { title: "Forbidden Office", main: "Play a song that would be playing if you hooked up with someone you work with.", bonus: "Loser has to say if they’ve ever crushed on someone at work/school.", vibe: "Dark", active: true },
+      { title: "Ruin Me Lyrics", main: "Pick a song where the lyrics basically ask for trouble.", bonus: "Loser points out the most unhinged line.", vibe: "Chaos", active: true },
+      { title: "Body Worship", main: "Play a track that makes you think about worshipping someone’s body.", bonus: "Loser chooses: neck, back, hips, or thighs as their favourite area to be praised.", vibe: "XXX-adjacent", active: true },
+      { title: "Hotel Elevator", main: "Pick a song that would be playing in the background of a hotel elevator on the way up to the room.", bonus: "Loser says which floor the fantasy stops at.", vibe: "Flirty", active: true },
+      { title: "Clothes On Fire", main: "Play a song that makes clothes feel suddenly too warm.", bonus: "Loser has to remove or loosen one harmless item (jewellery, hoodie, shoes) or drink.", vibe: "Fun", active: true },
+      { title: "Heart Rate Up", main: "Pick a song that would make your heart race if someone put their hand on your chest while it played.", bonus: "Loser has to admit who currently has that effect on them (role only).", vibe: "Flirty", active: true },
+      { title: "Obey The Beat", main: "Play a track where the beat itself feels like an order.", bonus: "Loser has to follow one simple command from the winner while the beat drops (keep it PG-13 unless you’re in XXX mode).", vibe: "Dark", active: true },
+      { title: "Almost Innocent", main: "Play a song that sounds sweet but the lyrics are secretly filthy.", bonus: "Loser must read one suggestive lyric out loud.", vibe: "Fun", active: true },
+      { title: "Choke On The Chorus", main: "Pick a song where the chorus hits so hard it feels illegal.", bonus: "Loser has to sing along to the chorus whether they know the words or not.", vibe: "Chaos", active: true },
+      { title: "Hands Under Table", main: "Play a track that would fit a scene where hands disappear under the table at dinner.", bonus: "Loser explains what they’d actually do if that happened to them.", vibe: "XXX-adjacent", active: true },
+      { title: "Afterparty Only", main: "Pick a song that you’d never play at the main event, only when it’s just you two left.", bonus: "Loser says whether they’d stay or pretend they need to leave.", vibe: "Flirty", active: true },
+      { title: "Pillow Talk", main: "Play a song that would be on during late-night pillow talk after everything already happened.", bonus: "Loser admits whether they’re a cuddler or they roll away.", vibe: "Soft XXX", active: true },
+      { title: "Edge Of The Bed", main: "Pick a song that feels like sitting on the edge of the bed waiting to see what happens next.", bonus: "Loser has to say if they’d make the first move or wait.", vibe: "Dark", active: true },
+      { title: "Owned By The Hook", main: "Play a song where the hook alone could ruin someone’s self-control.", bonus: "Loser chooses one lyric that would absolutely work on them.", vibe: "XXX-adjacent", active: true }
     ];
 
-    const defaultPunFirst = [
-      {
-        title: "Truth or Two Sips",
-        text: "Winner asks any flirty question. Loser answers honestly or takes two big sips.",
-        bonus: "",
-        vibe: "fun"
-      },
-      {
-        title: "Lap Magnet",
-        text: "Loser has to sit touching hips or knees with the winner for the next round.",
-        bonus: "",
-        vibe: "flirty"
-      },
-      {
-        title: "Phone Peek",
-        text: "Winner gets 10 seconds to scroll a random photo album.",
-        bonus: "Loser can block one folder by name.",
-        vibe: "chaos"
-      },
-      {
-        title: "Shot Caller",
-        text: "Winner chooses how loser has to sit or stand for the next song.",
-        bonus: "If loser exaggerates the pose, winner drinks instead.",
-        vibe: "fun"
-      },
-      {
-        title: "Compliment Storm",
-        text: "Loser must give the winner three specific compliments in a row.",
-        bonus: "",
-        vibe: "flirty"
-      },
-      {
-        title: "Stare Down",
-        text: "Loser maintains eye contact with winner for a full 15-count.",
-        bonus: "If someone laughs or looks away, they drink.",
-        vibe: "flirty"
-      },
-      {
-        title: "Story Time",
-        text: "Loser tells a short story about one of their wildest nights out.",
-        bonus: "",
-        vibe: "fun"
-      },
-      {
-        title: "Pet Name Test",
-        text: "Winner invents a pet name. Loser has to use it once next round.",
-        bonus: "",
-        vibe: "fun"
-      },
-      {
-        title: "Social Dice",
-        text: "Loser has to like the last photo the winner shows them.",
-        bonus: "",
-        vibe: "chaos"
-      },
-      {
-        title: "Whisper Check",
-        text: "Loser leans in and whispers something they like about the winner.",
-        bonus: "",
-        vibe: "flirty"
-      },
-      {
-        title: "Song Dedication",
-        text: "Loser must dedicate the next song they pick to the winner and say why.",
-        bonus: "",
-        vibe: "fun"
-      },
-      {
-        title: "Temperature Check",
-        text: "Winner lightly touches loser’s wrist or neck and rates how warm they feel.",
-        bonus: "",
-        vibe: "flirty"
-      },
-      {
-        title: "Truth or Dare Lite",
-        text: "Winner gives loser a mild dare. If they refuse, they finish their drink.",
-        bonus: "",
-        vibe: "fun"
-      },
-      {
-        title: "Chair Swap",
-        text: "Loser has to swap seats to wherever winner wants them for one round.",
-        bonus: "",
-        vibe: "fun"
-      },
-      {
-        title: "Close the Gap",
-        text: "If you’re more than an arm’s length apart, loser must move closer.",
-        bonus: "If you’re already close, loser has to keep one point of contact with winner.",
-        vibe: "flirty"
-      },
-      {
-        title: "Expose the Lie",
-        text: "Loser shares two truths and one lie. Winner tries to spot the lie.",
-        bonus: "If the winner is wrong, they drink.",
-        vibe: "fun"
-      },
-      {
-        title: "Secret Playlist",
-        text: "Loser shows the winner any one playlist name from their phone.",
-        bonus: "",
-        vibe: "fun"
-      },
-      {
-        title: "Emoji Only",
-        text: "Loser has to describe their last situationship using only three emojis.",
-        bonus: "",
-        vibe: "chaos"
-      },
-      {
-        title: "Hand Test",
-        text: "Loser has to place their hand on top of the winner’s for 10 seconds.",
-        bonus: "",
-        vibe: "flirty"
-      },
-      {
-        title: "Voice Note",
-        text: "Loser records a 5-second voice note saying something nice to the winner.",
-        bonus: "",
-        vibe: "fun"
-      },
-      {
-        title: "Blush Callout",
-        text: "Winner names one thing that would definitely make the loser blush.",
-        bonus: "Loser confirms true/false. If they lie badly, they drink.",
-        vibe: "flirty"
-      },
-      {
-        title: "Almost a Dare",
-        text: "Winner describes a dare that would be “too much” for First Date mode.",
-        bonus: "",
-        vibe: "fun"
-      },
-      {
-        title: "Warm-Up Lap",
-        text: "Loser has to walk across the room and back while winner rates their walk.",
-        bonus: "",
-        vibe: "fun"
-      },
-      {
-        title: "Hint of Jealousy",
-        text: "Loser shares something harmless that would instantly make them jealous.",
-        bonus: "",
-        vibe: "chill"
-      }
+    const defaultPunFirstDate = [
+      { title: "Tame Confession", main: "Loser shares a PG-13 secret about a crush, date or hookup they’ve never told you.", bonus: "If they name a specific scenario (no names), winner drinks.", vibe: "Talk", active: true },
+      { title: "Playlist Roast", main: "Loser hands over their phone and lets winner scroll their liked songs for 10 seconds, then pick one to lightly roast.", bonus: "If winner finds a guilty pleasure banger and admits they love it, both drink.", vibe: "Fun", active: true },
+      { title: "Eye Contact Only", main: "For the next round, loser must keep eye contact with the winner whenever they talk.", bonus: "If they break eye contact first, they take an extra sip.", vibe: "Flirty", active: true },
+      { title: "Almost Dirty Text", main: "Winner writes a flirty-but-safe text draft in loser’s messages to themselves. Loser has to read it out loud instead of sending it.", bonus: "If loser actually sends it to a real person, winner drinks.", vibe: "Chaos", active: true },
+      { title: "Hands On The Table", main: "For the next song, loser has to keep both hands flat on the table and narrate what they *would* be doing if they were allowed to touch.", bonus: "If winner thinks the narration is actually hot, they drink.", vibe: "Flirty", active: true },
+      { title: "First Move Fantasy", main: "Loser has to describe their ideal first kiss scenario in 3 sentences or less.", bonus: "If the description accidentally matches what’s happening tonight, both drink.", vibe: "Soft", active: true },
+      { title: "Compliment Shot", main: "Loser gives the winner a genuinely thirsty compliment about their looks or vibe.", bonus: "If winner blushes or laughs instead of saying thanks, they drink.", vibe: "Fun", active: true },
+      { title: "What If We Did", main: "Loser must say one thing they’d be curious to try with the winner… in a totally hypothetical universe.", bonus: "If winner says, “That’s not hypothetical,” loser drinks again.", vibe: "Flirty", active: true },
+      { title: "Lockscreen Reveal", main: "Loser has to show their lockscreen background and explain it in one sentence.", bonus: "If it’s a person and they admit to ever having a crush on them, they drink.", vibe: "Soft", active: true },
+      { title: "Neck Check", main: "Winner slowly leans in close enough to almost kiss loser’s neck, but stops just before touching. Loser has to stay still.", bonus: "If loser shivers or flinches, they drink.", vibe: "Flirty", active: true },
+      { title: "Gentle Roast", main: "Winner gives loser a playful roast about their flirting style or date history.", bonus: "Loser can clap back with one savage but light-hearted roast of the winner.", vibe: "Fun", active: true },
+      { title: "Truthful Sip", main: "Winner asks loser any flirty but non-explicit question they want. If loser refuses to answer, they drink twice.", bonus: "If loser answers everything honestly, winner drinks.", vibe: "Talk", active: true },
+      { title: "Soft Touch", main: "Loser lets winner choose one innocent place to rest their hand for ten seconds (shoulder, upper arm, knee, etc.).", bonus: "If loser asks them to leave it there after the ten seconds, winner drinks.", vibe: "Flirty", active: true },
+      { title: "Voice Note", main: "Loser has to say one line in their best bedroom voice into winner’s ear – nothing graphic, just tone.", bonus: "If winner gets goosebumps or laughs nervously, they drink.", vibe: "Flirty", active: true },
+      { title: "Guilty Crush", main: "Loser admits one type of person they know is bad for them but they always fall for.", bonus: "If winner fits that description even a little, both drink.", vibe: "Talk", active: true },
+      { title: "Song Dedication", main: "Loser picks any song and quietly dedicates a single lyric from it to the winner.", bonus: "If the line is obviously flirty, winner drinks.", vibe: "Soft", active: true },
+      { title: "Warm Hands", main: "Loser lets winner warm their hands by holding loser’s for fifteen seconds.", bonus: "If one of them comments on how good it feels, they both drink.", vibe: "Flirty", active: true },
+      { title: "Phone Glimpse", main: "Loser shows winner the name of the last person they flirted with in their messages (no message preview).", bonus: "If it’s saved with a heart or emoji, loser drinks twice.", vibe: "Chaos", active: true },
+      { title: "Future Trouble", main: "Loser has to finish the sentence: “If we keep hanging out like this, the first thing we’ll get in trouble for is…”", bonus: "If winner agrees instantly, both drink.", vibe: "Talk", active: true },
+      { title: "Knee To Knee", main: "For the next round, loser’s knee has to stay touching the winner’s.", bonus: "If one of them forgets and breaks contact, that person drinks.", vibe: "Flirty", active: true },
+      { title: "Mirror Check", main: "Loser describes how the two of you look together right now like they’re narrating a scene in a book.", bonus: "If it accidentally sounds romantic, winner drinks.", vibe: "Soft", active: true },
+      { title: "Almost Kiss", main: "Winner leans in like they’re about to kiss loser but stops just short and whispers “your move” instead.", bonus: "If loser actually closes the gap, winner drinks.", vibe: "Flirty", active: true },
+      { title: "Pocket Secret", main: "Loser tells the winner one thing about their body the winner wouldn’t guess just by looking.", bonus: "If winner already guessed it earlier tonight, both drink.", vibe: "Talk", active: true },
+      { title: "Backstory", main: "Loser explains the last time they genuinely felt butterflies.", bonus: "If that story involves music, loser chooses a song and both drink.", vibe: "Soft", active: true },
+      { title: "Blame The Alcohol", main: "Loser admits one thing they would only do with the winner if drinks were involved first.", bonus: "If winner says they’d do it sober, loser drinks.", vibe: "Talk", active: true },
+      { title: "Sit Closer", main: "Loser has to move half a seat closer to the winner and stay there for the next two rounds.", bonus: "If there’s no space left between them, winner drinks.", vibe: "Flirty", active: true },
+      { title: "Tease Level 1", main: "Loser lightly traces a single finger across the back of winner’s hand once, then pulls away.", bonus: "If winner asks, “Do that again,” they drink.", vibe: "Soft", active: true },
+      { title: "First To Fold", main: "Loser and winner hold eye contact for ten seconds. First one to look away drinks.", bonus: "If neither breaks, both drink because the tension is ridiculous.", vibe: "Flirty", active: true },
+      { title: "Secret Talent", main: "Loser shows any random tiny talent that might accidentally be attractive (lip bite, eyebrow raise, dance move, etc.).", bonus: "If winner rates it 8/10 or higher, they drink.", vibe: "Fun", active: true },
+      { title: "Hypothetical Trouble", main: "Loser answers: “If we were caught doing something we shouldn’t, where would it be?”", bonus: "If they pick somewhere you’ve both already been, both drink.", vibe: "Talk", active: true },
+      { title: "Borrowed Hoodie", main: "Loser must say whether they’d actually steal the winner’s hoodie if given the chance.", bonus: "If they’re already wearing something of the winner’s, winner drinks.", vibe: "Soft", active: true },
+      { title: "Almost Lap", main: "Loser must choose: sit pressed right next to the winner or sit half-on their lap for the next round (over clothes).", bonus: "If they choose lap, winner drinks.", vibe: "Flirty", active: true },
+      { title: "Cheeky Question", main: "Winner asks loser any cheeky question about kissing, touching or being touched – answers must stay PG-13 but honest.", bonus: "If loser says “I’ll show you instead” and demonstrates (still PG-13), winner drinks.", vibe: "Talk", active: true },
+      { title: "Jealousy Test", main: "Loser describes a scenario that would definitely make them jealous in a relationship.", bonus: "If winner admits they’ve done that to someone before, they drink.", vibe: "Talk", active: true },
+      { title: "Favorite Feature", main: "Loser must tell the winner what feature on the winner they’d compliment first if they were flirting seriously.", bonus: "If winner lets them touch that feature briefly (safe area only), both drink.", vibe: "Soft", active: true },
+      { title: "Crush Playlist", main: "Loser has to admit which song on their phone is secretly linked to a crush or ex.", bonus: "If they still like that person a little, they drink.", vibe: "Fun", active: true },
+      { title: "Neck Threat", main: "Loser has to say whether their neck is a weak spot or not, yes/no only.", bonus: "If they say yes, winner drinks.", vibe: "Flirty", active: true },
+      { title: "Sleepover Energy", main: "Loser describes what kind of sleeper they are (cuddler, sprawler, blanket thief, etc.).", bonus: "If winner reacts with “that sounds annoying”, loser drinks.", vibe: "Talk", active: true },
+      { title: "Tease Me Gently", main: "Loser teaches the winner one small way to tease them that doesn’t cross any boundaries (a phrase, look, or small gesture).", bonus: "If winner uses it before the end of the game, both drink when it happens.", vibe: "Soft", active: true },
+      { title: "Almost XXX", main: "Loser has to say one thing they definitely would not do on a first date… but might on a third.", bonus: "If saying it out loud makes them blush, they drink.", vibe: "Talk", active: true },
+      { title: "Ringtone Shame", main: "Loser shows the winner their current ringtone or notification sound.", bonus: "If it’s sexy or wildly embarrassing, both drink.", vibe: "Fun", active: true },
+      { title: "Pinned Gaze", main: "Winner leans closer and just stares into loser’s eyes for eight seconds without smiling.", bonus: "If loser cracks first and laughs, they drink.", vibe: "Flirty", active: true },
+      { title: "Inner Circle", main: "Loser shares one thing they only tell people once they’re in their inner circle.", bonus: "If winner was already told this before tonight, they drink for being special.", vibe: "Soft", active: true },
+      { title: "Hypothetical Kiss Scale", main: "On a scale from 1–10, loser says how likely they’d be to kiss the winner at the end of an amazing date (hypothetically).", bonus: "If they say 8 or higher, both drink.", vibe: "Flirty", active: true },
+      { title: "Shameless Eye Scan", main: "Loser gets three seconds to visibly check the winner out from head to toe.", bonus: "If winner says “again”, they drink.", vibe: "Fun", active: true },
+      { title: "Pick Your Poison", main: "Loser chooses: answer one spicy question from the winner or take two big sips.", bonus: "If they choose the question, winner drinks afterward for being bold.", vibe: "Talk", active: true },
+      { title: "Soft Boundary", main: "Loser names one soft boundary they have when things are starting to get intimate.", bonus: "If winner shares one too, both drink.", vibe: "Soft", active: true }
     ];
 
     const defaultPunXXX = [
-      {
-        title: "Obedience Training",
-        text: "Winner chooses one simple command for the next round (how to sit, what to call them, where to place your hands). Loser obeys.",
-        bonus: "If loser asks for one extra command, winner drinks.",
-        vibe: "dark"
-      },
-      {
-        title: "Over the Knee",
-        text: "Loser lies across the winner’s lap and gets a playful spanking count of five.",
-        bonus: "If loser asks for more than five, winner has to take a drink.",
-        vibe: "flirty"
-      },
-      {
-        title: "Strip the Ego",
-        text: "Loser removes one visible item of clothing (not underwear) or takes two drinks.",
-        bonus: "If they remove a second item, winner drinks instead.",
-        vibe: "dark"
-      },
-      {
-        title: "Lap Claim",
-        text: "Loser has to sit on the winner’s lap for the next full round.",
-        bonus: "If loser chooses to straddle facing them, winner drinks.",
-        vibe: "flirty"
-      },
-      {
-        title: "Neck Worship",
-        text: "Winner gets one slow kiss or linger along the side of loser’s neck.",
-        bonus: "Loser can offer the other side as a bonus; if they do, winner drinks.",
-        vibe: "flirty"
-      },
-      {
-        title: "Blindfold Tease",
-        text: "Loser closes their eyes while winner lightly positions them and speaks into their ear for 10 seconds.",
-        bonus: "",
-        vibe: "dark"
-      },
-      {
-        title: "Pinned Hands",
-        text: "Winner gently pins loser’s wrists (to wall, couch, or bed) for a 10-count while keeping eye contact.",
-        bonus: "",
-        vibe: "dark"
-      },
-      {
-        title: "Mark of the Night",
-        text: "Winner leaves a mark somewhere visible later (lip gloss on neck, bite on shoulder, etc.), if loser agrees.",
-        bonus: "",
-        vibe: "flirty"
-      },
-      {
-        title: "Clothing Limit",
-        text: "Loser must play the next 3 rounds down to just their underwear or finish their drink now.",
-        bonus: "",
-        vibe: "dark"
-      },
-      {
-        title: "Hands Only",
-        text: "Winner gets 15 seconds to explore loser’s arms, back, or hips with just their hands.",
-        bonus: "If loser guides their hands somewhere, winner drinks.",
-        vibe: "flirty"
-      },
-      {
-        title: "Wall Moment",
-        text: "Winner gently presses loser against the nearest surface and holds them there for one slow breath.",
-        bonus: "",
-        vibe: "dark"
-      },
-      {
-        title: "Kiss Roulette",
-        text: "Winner gets one kiss anywhere above the collarbone of their choosing.",
-        bonus: "If loser says “surprise me”, winner also drinks.",
-        vibe: "flirty"
-      },
-      {
-        title: "Edge of Control",
-        text: "Loser has to sit perfectly still while winner touches their neck, jawline, or lower back for 10 seconds.",
-        bonus: "",
-        vibe: "dark"
-      },
-      {
-        title: "Clothes on Trial",
-        text: "Winner picks one item of loser’s clothing and decides if it stays or goes.",
-        bonus: "If loser refuses, they finish their drink and pay one extra dare later.",
-        vibe: "chaos"
-      },
-      {
-        title: "Breath on Skin",
-        text: "Winner leans in close and lets their breath hit loser’s ear or neck for 10 seconds before saying one line.",
-        bonus: "",
-        vibe: "flirty"
-      },
-      {
-        title: "On Display",
-        text: "Loser must stand in front of the winner and spin slowly once while they “inspect” the outfit.",
-        bonus: "If winner asks for a slower spin and loser agrees, winner drinks.",
-        vibe: "fun"
-      },
-      {
-        title: "Pinned to the Seat",
-        text: "Winner holds loser’s thighs or hips in place for the entire next song.",
-        bonus: "",
-        vibe: "dark"
-      },
-      {
-        title: "Almost Too Close",
-        text: "Loser moves close enough that they can feel winner’s breath but can’t actually kiss unless told to.",
-        bonus: "If loser breaks first and kisses anyway, winner drinks.",
-        vibe: "flirty"
-      },
-      {
-        title: "Clothing Auction",
-        text: "Winner points to an item and offers a trade: remove it or take three drinks. Loser decides.",
-        bonus: "",
-        vibe: "chaos"
-      },
-      {
-        title: "Make Me Jealous",
-        text: "Loser has to describe, in detail, how someone else would flirt with them successfully.",
-        bonus: "If loser uses an example from real life, winner drinks.",
-        vibe: "dark"
-      },
-      {
-        title: "Body Trace",
-        text: "Winner traces a slow line with a finger from loser’s wrist up their arm and to a place of their choosing above the waist.",
-        bonus: "",
-        vibe: "flirty"
-      },
-      {
-        title: "Seat Change",
-        text: "Loser has to sit between winner’s legs for the next round, back against their chest or facing them.",
-        bonus: "",
-        vibe: "flirty"
-      },
-      {
-        title: "Heat Check",
-        text: "Winner presses their palm flat on loser’s lower back or hip and rates the “temperature.”",
-        bonus: "If they call it “too hot”, they both drink.",
-        vibe: "dark"
-      },
-      {
-        title: "Almost Undressed",
-        text: "Loser has to remove or open one layer (unzipping, unbuttoning, sliding strap) and leave it that way for one round.",
-        bonus: "If they go further by choice, winner drinks.",
-        vibe: "dark"
-      }
+      { title: "Over The Knee", main: "Loser has to lie across the winner’s lap and take five playful spanks over their clothes.", bonus: "If loser agrees to one extra spank on bare skin (still PG-13 and safe), winner drinks.", vibe: "Impact", active: true },
+      { title: "Lap Throne", main: "Loser must sit fully on the winner’s lap for the next two rounds.", bonus: "If they choose to face the winner while sitting, winner drinks.", vibe: "Position", active: true },
+      { title: "Pinned Wrists", main: "Winner gently pins loser’s wrists above their head against a wall, door or couch for a slow ten-count.", bonus: "If loser quietly says “harder” or leans into it, winner drinks.", vibe: "Dominance", active: true },
+      { title: "Neck Mark", main: "Winner is allowed to leave one visible mark between loser’s collarbone and shoulder (kiss, lipstick, light bite – safe area).", bonus: "If loser asks for a second one, winner drinks.", vibe: "Marks", active: true },
+      { title: "Kiss Trail", main: "Winner gets to kiss loser anywhere from the jawline to the shoulder, as slow as they want for ten seconds.", bonus: "If loser tilts or moves to give them better access, loser drinks.", vibe: "Kiss", active: true },
+      { title: "Clothes On Trial", main: "Winner chooses one item of loser’s clothing to be ‘on trial’. Loser must either remove it or finish their drink.", bonus: "If loser voluntarily removes an extra item (staying at least in underwear), winner drinks.", vibe: "Undressing", active: true },
+      { title: "Breath On Skin", main: "Winner places their mouth near loser’s neck or ear and just breathes there for ten seconds, then whispers one line they’d use in bed (no explicit words).", bonus: "If loser visibly shivers or closes their eyes, they drink.", vibe: "Tease", active: true },
+      { title: "Almost Stripped", main: "Loser must unbutton, unzip or slide down one clothing item and leave it like that for a full round.", bonus: "If they go all the way down to underwear for that item, winner drinks.", vibe: "Undressing", active: true },
+      { title: "Hands Guided", main: "Loser takes the winner’s hands and guides them exactly where they want to be held (over clothes).", bonus: "If loser guides them below the waistline over clothes, winner drinks.", vibe: "Control", active: true },
+      { title: "Between Their Legs", main: "Loser has to sit between winner’s legs on the floor or couch, back resting against winner’s chest, for one full song.", bonus: "If loser takes winner’s arms and wraps them around themselves, winner drinks.", vibe: "Position", active: true },
+      { title: "Wall Press", main: "Winner gently presses loser against a wall or door with their body for eight seconds, no kissing unless both agree separately.", bonus: "If loser lifts their chin or leans in like they want a kiss, they drink.", vibe: "Dominance", active: true },
+      { title: "Shirt Off Show", main: "If comfortable, loser removes their shirt or top (bra/undershirt can stay) and has to stay that way for two rounds. If not, they finish their drink instead.", bonus: "If winner also removes their top in solidarity, both drink.", vibe: "Undressing", active: true },
+      { title: "Body Map", main: "Winner traces an invisible map across loser’s torso or thighs with one finger while describing it quietly.", bonus: "If loser says “don’t stop” at any point, they drink.", vibe: "Tease", active: true },
+      { title: "Bite Me", main: "Winner gets one gentle bite anywhere safe above the shoulders or below the collarbone (no injuries, just teeth).", bonus: "If loser rates it 9 or 10 out of 10, winner drinks.", vibe: "Bite", active: true },
+      { title: "Nipple Gamble", main: "Loser must do whatever they can over their clothes to get obvious T.H.O. within 30 seconds.", bonus: "If they succeed and are comfortable, they have to briefly show the winner through their shirt; then winner drinks.", vibe: "Tease", active: true },
+      { title: "Blindfold Trust", main: "Winner blindfolds loser (or has them close their eyes) and kisses or lightly touches anywhere safe from neck to waist over clothes for fifteen seconds.", bonus: "If loser guesses three spots correctly afterward, winner drinks.", vibe: "Blindfold", active: true },
+      { title: "Hands Under", main: "With consent, winner may slide their hands under loser’s shirt (front or back) and rest them there for ten seconds, staying above any underwear.", bonus: "If loser guides their hands lower but still above underwear, winner drinks.", vibe: "Touch", active: true },
+      { title: "Bent & Spanked", main: "Loser has to bend over a surface (couch, table, lap) and receive six slow spanks over their clothes.", bonus: "If loser pushes their hips back for more contact, they drink.", vibe: "Impact", active: true },
+      { title: "Thigh Ride", main: "Loser has to straddle one of winner’s legs (over clothes) and stay there casually for one full song.", bonus: "If loser actually starts moving with the beat, winner drinks.", vibe: "Position", active: true },
+      { title: "Pinned Sit", main: "Winner sits loser on a chair or couch, stands between their knees and leans in close without kissing for ten seconds.", bonus: "If loser grabs onto winner anywhere, loser drinks.", vibe: "Dominance", active: true },
+      { title: "Underwear Only", main: "If both are comfortable, loser has to play the next three rounds in just their underwear. If not, they finish their drink instead.", bonus: "If winner joins them and also strips to underwear, both drink.", vibe: "Undressing", active: true },
+      { title: "Command Voice", main: "For the next round, loser must obey one harmless physical command from the winner (sit here, hands here, turn around, etc.).", bonus: "If loser says “yes, sir/ma’am” at any point, winner drinks.", vibe: "Control", active: true },
+      { title: "Full Body Kiss Line", main: "Winner may kiss loser’s body along a single path (e.g., from hand to shoulder, or from shoulder to jaw).", bonus: "If loser offers a slightly more intimate path next, they drink.", vibe: "Kiss", active: true },
+      { title: "Collar & Leash", main: "Winner gently hooks a finger into loser’s collar, necklace or waistband and pulls them an inch closer.", bonus: "If loser doesn’t resist at all and steps forward, they drink.", vibe: "Control", active: true },
+      { title: "Pinned To The Bed", main: "If available, winner pushes loser gently back onto a bed or couch, hands hovering over their wrists but not holding unless consented, for ten seconds.", bonus: "If loser asks them not to move yet when time is up, winner drinks.", vibe: "Dominance", active: true },
+      { title: "Mirror Trouble", main: "Loser has to stand facing a mirror with winner just behind them, close but not touching, for a slow ten-count.", bonus: "If loser leans back into winner’s body, they drink.", vibe: "Position", active: true },
+      { title: "Kiss Anywhere Safe", main: "Winner gets one kiss anywhere on loser’s body that is normally safe to show in public (shoulder, cheek, hand, neck if they’re okay with it).", bonus: "If loser offers a more private spot right after, winner drinks.", vibe: "Kiss", active: true },
+      { title: "Hands Tied", main: "Winner uses a tie, scarf or their hands to gently hold loser’s wrists together for one full song (comfort and safety first).", bonus: "If loser asks to keep them held even after the song, winner drinks.", vibe: "Bondage (light)", active: true },
+      { title: "Look At Me", main: "Winner sits close, takes loser’s chin gently and makes them hold eye contact for ten seconds.", bonus: "If loser bites their lip or smiles during it, they drink.", vibe: "Dominance", active: true },
+      { title: "Clothing Inspection", main: "Winner slowly runs their hands over loser’s outfit like they’re checking for hidden weapons – staying over clothes.", bonus: "If they pause a little too long anywhere and loser doesn’t stop them, winner drinks.", vibe: "Touch", active: true },
+      { title: "Taste Test", main: "Winner lightly licks or kisses some place safe like loser’s neck, shoulder or wrist once, then says whether they taste sweet or dangerous.", bonus: "If loser asks for a second taste, they drink.", vibe: "Tease", active: true },
+      { title: "Under-The-Shirt", main: "With consent, loser lets winner slide both hands under their shirt and just hold them for fifteen seconds (above underwear).", bonus: "If loser moves their own hands over winner’s to press them closer, winner drinks.", vibe: "Touch", active: true },
+      { title: "Sit On My Face (PG-13 Tease)", main: "Loser must whisper in winner’s ear exactly where and how they’d sit if the game wasn’t trying to stay somewhat respectable.", bonus: "If winner genuinely chokes on air, they drink.", vibe: "Verbal Tease", active: true },
+      { title: "Skirt/Shorts Lift", main: "If clothing allows and they’re comfortable, loser has to lift their skirt/oversized shirt/hoodie just enough to show the top of their thighs for five seconds.", bonus: "If they reveal more than necessary (still within boundaries), winner drinks.", vibe: "Exhibition", active: true },
+      { title: "Pinned On The Couch", main: "Winner pushes loser back into the couch, climbs over them without fully laying down, and holds the position for a ten-count.", bonus: "If loser wraps legs or arms around winner, loser drinks.", vibe: "Position", active: true },
+      { title: "Hot Whisper", main: "Winner whispers a vivid but not explicit description of what they’d do to loser in a locked room for thirty seconds.", bonus: "If loser gets goosebumps or visibly squirms, they drink.", vibe: "Dirty Talk (light)", active: true },
+      { title: "Chest To Back", main: "Winner stands behind loser, chest pressed gently to their back, arms around them or on their hips for one full song.", bonus: "If loser guides their hands lower, winner drinks.", vibe: "Position", active: true },
+      { title: "Obey My Hands", main: "Loser must mirror whatever winner does with their hands for fifteen seconds (running hands through hair, across neck, along thighs, etc.).", bonus: "If loser adds their own extra movement, they drink.", vibe: "Control", active: true },
+      { title: "Tease Strip", main: "Loser has to slowly remove one item of clothing like it’s a strip tease, even if it’s just socks or a hoodie.", bonus: "If the item is more than just accessories, winner drinks.", vibe: "Undressing", active: true },
+      { title: "Pinned On Lap", main: "Winner pulls loser down onto their lap and wraps an arm around their waist for fifteen seconds.", bonus: "If loser stays put after the time is up, they drink.", vibe: "Position", active: true },
+      { title: "Heavy Makeout Option", main: "Loser chooses: give winner a slow, heavy makeout session for at least fifteen seconds, or finish their drink in one go.", bonus: "If they pick the makeout and pull away second, winner drinks.", vibe: "Kiss", active: true },
+      { title: "Kiss Blind", main: "Loser closes their eyes while winner picks one part of their face/neck to kiss gently.", bonus: "If loser correctly guesses the exact spot, winner drinks.", vibe: "Blindfold", active: true },
+      { title: "Grab & Pull", main: "Winner is allowed one grab of loser’s hips, waistband or thighs (over clothes) to pull them closer.", bonus: "If loser doesn’t resist and steps fully into them, they drink.", vibe: "Control", active: true },
+      { title: "Undercover Touch", main: "For the next round, winner is allowed to keep one hand on loser’s thigh under a blanket or jacket (over clothes).", bonus: "If loser moves their leg to make more contact, winner drinks.", vibe: "Touch", active: true },
+      { title: "Bare Shoulder", main: "Loser has to expose one shoulder and the winner gets ten seconds of access for kisses, bites or breath there.", bonus: "If loser exposes more than just shoulder, they drink.", vibe: "Undressing", active: true },
+      { title: "Follow My Lead", main: "Winner leads a slow, grinding dance with loser for one whole song (standing or seated).", bonus: "If loser takes over and leads instead, winner drinks.", vibe: "Dance", active: true },
+      { title: "Secret Safe Word", main: "Together you pick a safe word. For this punishment, winner can do anything within boundaries until loser uses it – or thirty seconds pass.", bonus: "If safe word never gets used, both drink.", vibe: "Control", active: true },
+      { title: "Underwear Peek", main: "If comfortable, loser must briefly show the waistband or strap of their underwear.", bonus: "If winner asks what colour it is and loser answers instead of refusing, winner drinks.", vibe: "Exhibition", active: true }
     ];
 
-    // ---- State ----
-    let challenges = [];
-    let punFirst = [];
-    let punXXX = [];
+    // ---------- Utility ----------
 
-    let mode = "first"; // "first" | "mixed" | "xxx"
+    const MODES = { FIRST: "first", XXX: "xxx", MIXED: "mixed" };
 
-    let challengeDeck = [];
-    let challengeIndex = -1;
-
-    let punDeckCurrent = [];
-    let punIndex = -1;
-
-    let lastChallengeTitle = "";
-
-    let gameStarted = false;
-    let awaitingPunishment = false;
-
-    // Audio
-    let audioCtx = null;
-    function initAudio() {
-      if (!audioCtx) {
-        const AC = window.AudioContext || window.webkitAudioContext;
-        if (AC) audioCtx = new AC();
-      }
-    }
-    function playTone(freq = 520, duration = 0.09, type = "triangle", volume = 0.23) {
-      if (!audioCtx) return;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = type;
-      osc.frequency.value = freq;
-      gain.gain.value = volume;
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      const now = audioCtx.currentTime;
-      osc.start(now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
-      osc.stop(now + duration + 0.02);
-    }
-    function playClickSound() { playTone(540, 0.08, "triangle", 0.25); }
-    function playShuffleSound() {
-      if (!audioCtx) return;
-      const now = audioCtx.currentTime;
-      const freqs = [260, 320, 380, 440];
-      freqs.forEach((f, i) => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = "square";
-        osc.frequency.value = f;
-        gain.gain.value = 0.13;
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        const t = now + i * 0.05;
-        osc.start(t);
-        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
-        osc.stop(t + 0.1);
-      });
-    }
-
-    // Storage
-    function loadDeck(key, fallback) {
+    function playTone(frequency = 660, duration = 0.07, volume = 0.2) {
       try {
-        const raw = localStorage.getItem(key);
-        if (!raw) return fallback.map(c => ({ ...c }));
-        const parsed = JSON.parse(raw);
-        if (!Array.isArray(parsed) || !parsed.length) return fallback.map(c => ({ ...c }));
-        return parsed;
-      } catch {
-        return fallback.map(c => ({ ...c }));
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.value = frequency;
+        gain.gain.value = volume;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        setTimeout(() => {
+          osc.stop();
+          ctx.close();
+        }, duration * 1000);
+      } catch (e) {
+        // audio not supported / user interaction needed – ignore
       }
     }
-    function saveDeck(key, deck) {
-      try { localStorage.setItem(key, JSON.stringify(deck)); } catch {}
-    }
-    function resetAllDecksToDefault() {
-      challenges = defaultChallenges.map(c => ({ ...c }));
-      punFirst = defaultPunFirst.map(c => ({ ...c }));
-      punXXX = defaultPunXXX.map(c => ({ ...c }));
-      saveDeck(STORAGE_CHALLENGE, challenges);
-      saveDeck(STORAGE_PUN_FIRST, punFirst);
-      saveDeck(STORAGE_PUN_XXX, punXXX);
-      buildDecks();
+
+    function deepClone(obj) {
+      return JSON.parse(JSON.stringify(obj));
     }
 
-    // Initial load
-    challenges = loadDeck(STORAGE_CHALLENGE, defaultChallenges);
-    punFirst = loadDeck(STORAGE_PUN_FIRST, defaultPunFirst);
-    punXXX = loadDeck(STORAGE_PUN_XXX, defaultPunXXX);
+    function loadDeck(storageKey, defaults) {
+      let deck = [];
+      try {
+        const saved = localStorage.getItem(storageKey);
+        if (saved) {
+          deck = JSON.parse(saved);
+        }
+      } catch (e) {
+        deck = [];
+      }
+      if (!Array.isArray(deck)) deck = [];
+      const merged = [];
+      const maxLen = Math.max(deck.length, defaults.length);
+      for (let i = 0; i < maxLen; i++) {
+        let savedCard = deck[i];
+        const defCard = defaults[i] ? deepClone(defaults[i]) : null;
+        if (savedCard) {
+          // normalise field names
+          if (savedCard.text && !savedCard.main) savedCard.main = savedCard.text;
+          if (savedCard.body && !savedCard.main) savedCard.main = savedCard.body;
+          if (savedCard.vibeTag && !savedCard.vibe) savedCard.vibe = savedCard.vibeTag;
+          if (typeof savedCard.active === "undefined") savedCard.active = true;
+          merged.push(savedCard);
+        } else if (defCard) {
+          merged.push(defCard);
+        }
+      }
+      return merged;
+    }
 
-    // Helpers
-    function shuffle(arr) {
-      const copy = arr.slice();
-      for (let i = copy.length - 1; i > 0; i--) {
+    function saveDeck(storageKey, deck) {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(deck));
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    function shuffleArray(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
+        [a[i], a[j]] = [a[j], a[i]];
       }
-      return copy;
+      return a;
     }
 
-    function buildDecks() {
-      challengeDeck = shuffle(challenges.map((c, idx) => ({ ...c, id: idx + 1 })));
-      challengeIndex = -1;
-      buildPunDeckForMode();
-      punIndex = -1;
-      updateRemaining();
-    }
+    // ---------- State ----------
 
-    function buildPunDeckForMode() {
-      if (mode === "first") {
-        punDeckCurrent = shuffle(punFirst.map((c, idx) => ({ ...c, id: idx + 1, source: "first" })));
-      } else if (mode === "xxx") {
-        punDeckCurrent = shuffle(punXXX.map((c, idx) => ({ ...c, id: idx + 1, source: "xxx" })));
-      } else { // mixed
-        const deckA = punFirst.map((c, idx) => ({ ...c, id: idx + 1, source: "first" }));
-        const deckB = punXXX.map((c, idx) => ({ ...c, id: idx + 1, source: "xxx" }));
-        punDeckCurrent = shuffle(deckA.concat(deckB));
-      }
-    }
+    let decks = {
+      challenges: [],
+      punFirst: [],
+      punXXX: []
+    };
 
-    function glowClassForVibe(vibe) {
-      switch (vibe) {
-        case "fun": return "glow-gold";
-        case "dark": return "glow-red";
-        case "flirty": return "glow-pink";
-        case "chaos": return "glow-violet";
-        case "chill": return "glow-blue";
-        default: return "glow-gold";
-      }
-    }
+    let currentMode = MODES.FIRST;
+    let remaining = {
+      challenges: [],
+      punFirst: [],
+      punXXX: [],
+      punMixed: []
+    };
 
-    // DOM refs
-    const cardEl = document.getElementById("card");
-    const cardTypeLabel = document.getElementById("cardTypeLabel");
-    const cardMeta = document.getElementById("cardMeta");
-    const cardTitleEl = document.getElementById("cardTitle");
-    const cardSectionHeading = document.getElementById("cardSectionHeading");
-    const cardThemeEl = document.getElementById("cardTheme");
-    const cardObeyHeading = document.getElementById("cardObeyHeading");
-    const cardObeyEl = document.getElementById("cardObey");
-    const cardBonusEl = document.getElementById("cardBonus");
-    const lastChallengeText = document.getElementById("lastChallengeText");
+    let currentCardType = "info"; // "challenge" or "punishment"
+    let lastChallengeIndex = null;
+    let lastPunishmentIndex = null;
+    let lastPunishmentDeck = null;
 
-    const startBtn = document.getElementById("startBtn");
-    const challengeBtn = document.getElementById("challengeBtn");
-    const punishBtn = document.getElementById("punishBtn");
-    const statusTextEl = document.getElementById("statusText");
-    const remainingTextEl = document.getElementById("remainingText");
+    // config state
+    let configOpen = false;
+    let configDeckKey = "challenges";
+    let configSelectedIndex = 0;
 
-    const modeFirstBtn = document.getElementById("modeFirst");
-    const modeMixedBtn = document.getElementById("modeMixed");
-    const modeXXXBtn = document.getElementById("modeXXX");
+    // ---------- DOM refs ----------
+
+    const modeButtons = document.querySelectorAll(".mode-btn");
+    const startGameBtn = document.getElementById("startGameBtn");
+    const rollChallengeBtn = document.getElementById("rollChallengeBtn");
+    const rollPunishmentBtn = document.getElementById("rollPunishmentBtn");
+    const reshuffleBtn = document.getElementById("reshuffleBtn");
+
+    const cardStatus = document.getElementById("cardStatus");
+    const cardTypeTag = document.getElementById("cardTypeTag");
+    const cardCount = document.getElementById("cardCount");
+    const cardMainText = document.getElementById("cardMainText");
+    const cardBonusText = document.getElementById("cardBonusText");
+    const cardVibeEl = document.getElementById("cardVibe");
+    const cardFooterMeta = document.getElementById("cardFooterMeta");
+
+    const modeHintText = document.getElementById("modeHintText");
+    const deckCountsEl = document.getElementById("deckCounts");
 
     const configToggle = document.getElementById("configToggle");
     const configPanel = document.getElementById("configPanel");
-    const configCardLabel = document.getElementById("configCardLabel");
-    const configCountLabel = document.getElementById("configCountLabel");
-    const configMessage = document.getElementById("configMessage");
-    const cfgDeckType = document.getElementById("cfgDeckType");
-    const cfgPrev = document.getElementById("cfgPrev");
-    const cfgNext = document.getElementById("cfgNext");
-    const cfgGo = document.getElementById("cfgGo");
-    const cfgIndexInput = document.getElementById("cfgIndexInput");
-    const cfgTitle = document.getElementById("cfgTitle");
-    const cfgBody = document.getElementById("cfgBody");
-    const cfgBonus = document.getElementById("cfgBonus");
-    const cfgVibe = document.getElementById("cfgVibe");
-    const cfgSave = document.getElementById("cfgSave");
-    const cfgReset = document.getElementById("cfgReset");
+    const deckSelect = document.getElementById("deckSelect");
+    const cardList = document.getElementById("cardList");
+    const addCardBtn = document.getElementById("addCardBtn");
+    const duplicateCardBtn = document.getElementById("duplicateCardBtn");
+    const deleteCardBtn = document.getElementById("deleteCardBtn");
+    const cardTitleInput = document.getElementById("cardTitleInput");
+    const cardMainInput = document.getElementById("cardMainInput");
+    const cardBonusInput = document.getElementById("cardBonusInput");
+    const cardVibeInput = document.getElementById("cardVibeInput");
+    const cardActiveInput = document.getElementById("cardActiveInput");
+    const saveCardBtn = document.getElementById("saveCardBtn");
+    const configInfo = document.getElementById("configInfo");
 
-    // Config state
-    let cfgIndex = 0;
+    // ---------- Game setup ----------
 
-    function updateRemaining() {
-      const remainingChallenges = challengeDeck.length - (challengeIndex + 1);
-      const remainingPun = punDeckCurrent.length - (punIndex + 1);
-      remainingTextEl.textContent = `Challenges: ${Math.max(remainingChallenges,0)} • Pun: ${Math.max(remainingPun,0)}`;
+    function loadAllDecks() {
+      decks.challenges = loadDeck(STORAGE_KEYS.challenges, defaultChallenges);
+      decks.punFirst = loadDeck(STORAGE_KEYS.punFirst, defaultPunFirstDate);
+      decks.punXXX = loadDeck(STORAGE_KEYS.punXXX, defaultPunXXX);
+      updateDeckCounts();
     }
 
-    function setMode(newMode) {
-      mode = newMode;
-      modeFirstBtn.classList.toggle("active", mode === "first");
-      modeMixedBtn.classList.toggle("active", mode === "mixed");
-      modeXXXBtn.classList.toggle("active", mode === "xxx");
-
-      buildPunDeckForMode();
-      punIndex = -1;
-      updateRemaining();
-      if (!gameStarted) {
-        statusTextEl.innerHTML = `Mode set to <strong>${mode === "first" ? "First Date" : mode === "xxx" ? "XXX" : "Mixed"}</strong>. Press <strong>Start Game</strong> to shuffle decks.`;
-      }
+    function updateDeckCounts() {
+      const cActive = decks.challenges.filter(c => c.active !== false).length;
+      const pFirstActive = decks.punFirst.filter(c => c.active !== false).length;
+      const pXXXActive = decks.punXXX.filter(c => c.active !== false).length;
+      deckCountsEl.textContent = `Challenges: ${cActive} • First Date punishments: ${pFirstActive} • XXX punishments: ${pXXXActive}`;
     }
 
-    function displayChallenge(card) {
-      cardEl.classList.remove("glow-pink","glow-violet","glow-gold","glow-red","glow-blue");
-      cardEl.classList.add(glowClassForVibe(card.vibe || "fun"));
-
-      cardTypeLabel.textContent = "Challenge";
-      cardMeta.textContent = `Card ${challengeIndex + 1} / ${challengeDeck.length}`;
-      cardTitleEl.textContent = card.title || "Challenge";
-      cardSectionHeading.textContent = "Theme";
-      cardThemeEl.textContent = card.theme || "";
-      cardObeyHeading.textContent = "How to win";
-      cardObeyEl.textContent = "Pick your song carefully. You want something that fits this mood but they’ve never heard.";
-      cardBonusEl.style.display = "none";
-      cardBonusEl.textContent = "";
-      lastChallengeText.textContent = "";
-    }
-
-    function displayPunishment(card) {
-      cardEl.classList.remove("glow-pink","glow-violet","glow-gold","glow-red","glow-blue");
-      cardEl.classList.add(glowClassForVibe(card.vibe || "dark"));
-
-      cardTypeLabel.textContent = mode === "xxx" ? "XXX Punishment" : "Punishment";
-      cardMeta.textContent = `Card ${punIndex + 1} / ${punDeckCurrent.length}`;
-      cardTitleEl.textContent = card.title || "Punishment";
-      cardSectionHeading.textContent = "Obey";
-      cardThemeEl.textContent = card.text || "";
-      cardObeyHeading.textContent = "Bonus (optional)";
-      if (card.bonus && card.bonus.trim().length > 0) {
-        cardBonusEl.style.display = "block";
-        cardBonusEl.textContent = card.bonus;
+    function setMode(mode) {
+      currentMode = mode;
+      modeButtons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.mode === mode);
+      });
+      let text;
+      if (mode === MODES.FIRST) {
+        text = "Mode: First Date. Punishments stay flirty and playful.";
+      } else if (mode === MODES.XXX) {
+        text = "Mode: XXX. Punishments will be risqué and physical. Make sure you both want that.";
       } else {
-        cardBonusEl.style.display = "none";
-        cardBonusEl.textContent = "";
+        text = "Mode: Mixed. Any punishment can appear, from sweet to filthy.";
       }
-      lastChallengeText.textContent = lastChallengeTitle ? `Last challenge: ${lastChallengeTitle}` : "";
+      modeHintText.textContent = text;
     }
 
-    function animateCard() {
-      cardEl.classList.remove("card-draw");
-      void cardEl.offsetWidth;
-      cardEl.classList.add("card-draw");
+    function resetRemainingDecks() {
+      remaining.challenges = shuffleArray(decks.challenges.map((_, idx) => idx).filter(i => decks.challenges[i].active !== false));
+      remaining.punFirst = shuffleArray(decks.punFirst.map((_, idx) => idx).filter(i => decks.punFirst[i].active !== false));
+      remaining.punXXX = shuffleArray(decks.punXXX.map((_, idx) => idx).filter(i => decks.punXXX[i].active !== false));
+      const mixedIndices = [];
+      for (const i of remaining.punFirst) mixedIndices.push({ deck: "punFirst", index: i });
+      for (const i of remaining.punXXX) mixedIndices.push({ deck: "punXXX", index: i });
+      remaining.punMixed = shuffleArray(mixedIndices);
     }
 
-    function startGame() {
-      initAudio();
-      playShuffleSound();
-      buildDecks();
-      gameStarted = true;
-      awaitingPunishment = false;
-      challengeBtn.disabled = false;
-      punishBtn.disabled = true;
-      cardEl.classList.add("card-shuffle");
-      setTimeout(() => cardEl.classList.remove("card-shuffle"), 520);
-      statusTextEl.innerHTML = "Decks shuffled. Roll a challenge, battle your songs, then roll a punishment.";
+    function drawFromRemaining(listName) {
+      const list = remaining[listName];
+      if (!list || list.length === 0) return null;
+      return list.shift();
+    }
+
+    function showCard(card, type, position, total, fromDeckLabel) {
+      const main = card.main || card.text || card.body || "";
+      const bonus = (card.bonus || "").trim();
+      const vibe = (card.vibe || "Unlabelled").trim();
+
+      if (type === "challenge") {
+        cardStatus.textContent = "CHALLENGE";
+        cardTypeTag.textContent = "SONG BATTLE";
+      } else if (type === "punishment") {
+        cardStatus.textContent = "PUNISHMENT";
+        cardTypeTag.textContent = fromDeckLabel;
+      } else {
+        cardStatus.textContent = "INFO";
+        cardTypeTag.textContent = "PRESS START GAME";
+      }
+
+      cardMainText.textContent = main;
+      cardBonusText.textContent = bonus ? "Bonus: " + bonus : "";
+      cardBonusText.style.display = bonus ? "block" : "none";
+      cardVibeEl.textContent = "Vibe: " + vibe;
+      cardCount.textContent = `${position} / ${total}`;
+      cardFooterMeta.textContent = type === "challenge"
+        ? "Loser of the song battle rolls a punishment next."
+        : "Do the dare exactly as written. Adjust only if both players want it hotter.";
     }
 
     function rollChallenge() {
-      if (!gameStarted) return;
-      initAudio();
-      playClickSound();
-      if (challengeIndex + 1 >= challengeDeck.length) {
-        statusTextEl.innerHTML = "Challenge deck empty. Press <strong>Start Game</strong> to reshuffle.";
-        challengeBtn.disabled = true;
+      const idx = drawFromRemaining("challenges");
+      if (idx === null || typeof idx === "undefined") {
+        showCard({
+          main: "No challenges left in this run. Hit Reset decks if you want to start over.",
+          bonus: "",
+          vibe: "Info"
+        }, "info", 0, 0, "");
         return;
       }
-      challengeIndex++;
-      const card = challengeDeck[challengeIndex];
-      lastChallengeTitle = card.title || "";
-      awaitingPunishment = true;
-      punishBtn.disabled = false;
-
-      animateCard();
-      setTimeout(() => displayChallenge(card), 90);
-      statusTextEl.innerHTML = "Play 15 seconds each. If they guess your song in time, you lose and must roll a punishment.";
-      updateRemaining();
+      lastChallengeIndex = idx;
+      const total = decks.challenges.filter(c => c.active !== false).length;
+      const position = total - remaining.challenges.length;
+      const card = decks.challenges[idx];
+      currentCardType = "challenge";
+      playTone(760, 0.11, 0.25);
+      showCard(card, "challenge", position, total, "");
     }
 
     function rollPunishment() {
-      if (!gameStarted || !awaitingPunishment) return;
-      initAudio();
-      playClickSound();
-      if (punIndex + 1 >= punDeckCurrent.length) {
-        statusTextEl.innerHTML = "Punishment deck empty in this mode. Press <strong>Start Game</strong> to reshuffle.";
-        punishBtn.disabled = true;
+      let index, deckLabel, deckArr;
+      if (currentMode === MODES.FIRST) {
+        const idx = drawFromRemaining("punFirst");
+        if (idx === null || typeof idx === "undefined") {
+          showCard({
+            main: "No First Date punishments left. Reset decks to go again.",
+            bonus: "",
+            vibe: "Info"
+          }, "info", 0, 0, "");
+          return;
+        }
+        index = idx;
+        deckArr = decks.punFirst;
+        deckLabel = "First Date Punishment";
+        lastPunishmentDeck = "punFirst";
+      } else if (currentMode === MODES.XXX) {
+        const idx = drawFromRemaining("punXXX");
+        if (idx === null || typeof idx === "undefined") {
+          showCard({
+            main: "No XXX punishments left. Reset decks if you’re still brave.",
+            bonus: "",
+            vibe: "Info"
+          }, "info", 0, 0, "");
+          return;
+        }
+        index = idx;
+        deckArr = decks.punXXX;
+        deckLabel = "XXX Punishment";
+        lastPunishmentDeck = "punXXX";
+      } else {
+        const obj = drawFromRemaining("punMixed");
+        if (!obj) {
+          showCard({
+            main: "No Mixed punishments left. Reset decks for another chaotic run.",
+            bonus: "",
+            vibe: "Info"
+          }, "info", 0, 0, "");
+          return;
+        }
+        index = obj.index;
+        deckArr = obj.deck === "punFirst" ? decks.punFirst : decks.punXXX;
+        deckLabel = obj.deck === "punFirst" ? "First Date Punishment" : "XXX Punishment";
+        lastPunishmentDeck = obj.deck;
+      }
+      lastPunishmentIndex = index;
+      const total = deckArr.filter(c => c.active !== false).length;
+      let usedCount = total;
+      if (lastPunishmentDeck === "punFirst") usedCount = total - remaining.punFirst.length;
+      if (lastPunishmentDeck === "punXXX") usedCount = total - remaining.punXXX.length;
+      if (currentMode === MODES.MIXED) usedCount = (total + 0); // we just show "—" for mixed
+      const position = usedCount;
+      const card = deckArr[index];
+      currentCardType = "punishment";
+      playTone(540, 0.11, 0.25);
+      showCard(card, "punishment", position, total, deckLabel);
+    }
+
+    function startGame() {
+      resetRemainingDecks();
+      rollChallengeBtn.disabled = false;
+      rollPunishmentBtn.disabled = false;
+      playTone(880, 0.13, 0.3);
+      showCard({
+        main: "Decks shuffled. Roll a Challenge, pick your songs, and play only the first 15 seconds. If they recognise yours, you drink and obey the punishment.",
+        bonus: "No repeats until each deck is empty. If a card crosses a boundary in real life, you can always redraw.",
+        vibe: "Info"
+      }, "info", 0, 0, "");
+      currentCardType = "info";
+    }
+
+    function resetDecksAndStorage() {
+      // reset to defaults + keep edits? We'll just reload from storage; there’s also a way to hard reset if needed.
+      resetRemainingDecks();
+      rollChallengeBtn.disabled = false;
+      rollPunishmentBtn.disabled = false;
+      playTone(400, 0.11, 0.25);
+      showCard({
+        main: "Deck order reset. Your custom cards are still saved on this device.",
+        bonus: "Use Config Mode if you want to delete or change anything.",
+        vibe: "Info"
+      }, "info", 0, 0, "");
+    }
+
+    // ---------- Config ----------
+
+    function getConfigDeckArray() {
+      if (configDeckKey === "challenges") return decks.challenges;
+      if (configDeckKey === "pun_first") return decks.punFirst;
+      if (configDeckKey === "pun_xxx") return decks.punXXX;
+      return decks.challenges;
+    }
+
+    function getStorageKeyForConfigDeck() {
+      if (configDeckKey === "challenges") return STORAGE_KEYS.challenges;
+      if (configDeckKey === "pun_first") return STORAGE_KEYS.punFirst;
+      if (configDeckKey === "pun_xxx") return STORAGE_KEYS.punXXX;
+      return STORAGE_KEYS.challenges;
+    }
+
+    function renderConfigList() {
+      const deck = getConfigDeckArray();
+      cardList.innerHTML = "";
+      deck.forEach((card, idx) => {
+        const item = document.createElement("div");
+        item.className = "config-card-item";
+        if (idx === configSelectedIndex) item.classList.add("active");
+        if (card.active === false) item.classList.add("inactive");
+        const idxSpan = document.createElement("span");
+        idxSpan.className = "idx";
+        idxSpan.textContent = idx + 1;
+        const titleSpan = document.createElement("span");
+        titleSpan.className = "title";
+        titleSpan.textContent = card.title || "(untitled)";
+        const vibeSpan = document.createElement("span");
+        vibeSpan.className = "vibe-chip";
+        vibeSpan.textContent = card.vibe || "—";
+        item.appendChild(idxSpan);
+        item.appendChild(titleSpan);
+        item.appendChild(vibeSpan);
+        item.addEventListener("click", () => {
+          configSelectedIndex = idx;
+          loadConfigCardIntoForm();
+          renderConfigList();
+        });
+        cardList.appendChild(item);
+      });
+    }
+
+    function loadConfigCardIntoForm() {
+      const deck = getConfigDeckArray();
+      if (!deck.length) {
+        cardTitleInput.value = "";
+        cardMainInput.value = "";
+        cardBonusInput.value = "";
+        cardVibeInput.value = "";
+        cardActiveInput.checked = true;
+        configInfo.textContent = "No cards in this deck yet. Add one to start.";
         return;
       }
-      punIndex++;
-      const card = punDeckCurrent[punIndex];
-      awaitingPunishment = false;
-      // After punishment, you need to roll a new challenge before more punishment
-      punishBtn.disabled = true;
-
-      animateCard();
-      setTimeout(() => displayPunishment(card), 90);
-      statusTextEl.innerHTML = "Loser obeys the punishment. Bonus is optional: if they choose the bonus, the winner drinks.";
-      updateRemaining();
+      if (configSelectedIndex < 0) configSelectedIndex = 0;
+      if (configSelectedIndex >= deck.length) configSelectedIndex = deck.length - 1;
+      const card = deck[configSelectedIndex];
+      cardTitleInput.value = card.title || "";
+      cardMainInput.value = card.main || card.text || card.body || "";
+      cardBonusInput.value = card.bonus || "";
+      cardVibeInput.value = card.vibe || "";
+      cardActiveInput.checked = card.active !== false;
+      configInfo.textContent = `Editing card ${configSelectedIndex + 1} of ${deck.length}. Changes save locally only.`;
     }
 
-    // Config helpers
-    function getCfgDeck() {
-      const type = cfgDeckType.value;
-      if (type === "challenge") return { arr: challenges, label: "Challenges" };
-      if (type === "first") return { arr: punFirst, label: "Punishments – First Date" };
-      return { arr: punXXX, label: "Punishments – XXX" };
+    function saveConfigCardFromForm() {
+      const deck = getConfigDeckArray();
+      if (!deck.length) return;
+      const card = deck[configSelectedIndex];
+      card.title = cardTitleInput.value.trim() || "(untitled)";
+      card.main = cardMainInput.value.trim();
+      card.bonus = cardBonusInput.value.trim();
+      card.vibe = cardVibeInput.value.trim();
+      card.active = !!cardActiveInput.checked;
+      const key = getStorageKeyForConfigDeck();
+      saveDeck(key, deck);
+      updateDeckCounts();
+      renderConfigList();
+      loadConfigCardIntoForm();
+      playTone(920, 0.08, 0.25);
     }
 
-    function loadConfigCard() {
-      const { arr, label } = getCfgDeck();
-      if (!arr.length) return;
-      if (cfgIndex < 0) cfgIndex = 0;
-      if (cfgIndex >= arr.length) cfgIndex = arr.length - 1;
-      const card = arr[cfgIndex];
-
-      configCardLabel.textContent = `${label}: card ${cfgIndex + 1}`;
-      configCountLabel.textContent = `${arr.length} cards total`;
-      cfgIndexInput.value = cfgIndex + 1;
-
-      cfgTitle.value = card.title || "";
-      if (cfgDeckType.value === "challenge") {
-        cfgBody.value = card.theme || "";
-        cfgBonus.value = "";
-      } else {
-        cfgBody.value = card.text || "";
-        cfgBonus.value = card.bonus || "";
-      }
-      cfgVibe.value = card.vibe || "fun";
-      configMessage.textContent = "";
+    function addNewCard() {
+      const deck = getConfigDeckArray();
+      const newCard = {
+        title: "New card",
+        main: "",
+        bonus: "",
+        vibe: "",
+        active: true
+      };
+      deck.push(newCard);
+      configSelectedIndex = deck.length - 1;
+      saveDeck(getStorageKeyForConfigDeck(), deck);
+      renderConfigList();
+      loadConfigCardIntoForm();
     }
 
-    function saveConfigCard() {
-      const { arr, label } = getCfgDeck();
-      if (!arr.length) return;
-      const card = arr[cfgIndex];
-      card.title = (cfgTitle.value || "").trim();
-      if (cfgDeckType.value === "challenge") {
-        card.theme = (cfgBody.value || "").trim();
-        card.bonus = "";
-      } else {
-        card.text = (cfgBody.value || "").trim();
-        card.bonus = (cfgBonus.value || "").trim();
-      }
-      card.vibe = cfgVibe.value || "fun";
-      arr[cfgIndex] = card;
-
-      if (cfgDeckType.value === "challenge") {
-        challenges = arr;
-        saveDeck(STORAGE_CHALLENGE, challenges);
-      } else if (cfgDeckType.value === "first") {
-        punFirst = arr;
-        saveDeck(STORAGE_PUN_FIRST, punFirst);
-      } else {
-        punXXX = arr;
-        saveDeck(STORAGE_PUN_XXX, punXXX);
-      }
-      configMessage.textContent = "Saved. Changes are stored on this device.";
-      // Rebuild decks so new vibes/titles show up on draw
-      buildDecks();
+    function duplicateCard() {
+      const deck = getConfigDeckArray();
+      if (!deck.length) return;
+      const base = deck[configSelectedIndex];
+      const copy = deepClone(base);
+      copy.title = base.title + " (copy)";
+      deck.splice(configSelectedIndex + 1, 0, copy);
+      configSelectedIndex += 1;
+      saveDeck(getStorageKeyForConfigDeck(), deck);
+      renderConfigList();
+      loadConfigCardIntoForm();
     }
 
-    // Event wiring
-    startBtn.addEventListener("click", () => {
+    function deleteCard() {
+      const deck = getConfigDeckArray();
+      if (!deck.length) return;
+      if (!confirm("Delete this card from this deck? This can’t be undone.")) return;
+      deck.splice(configSelectedIndex, 1);
+      if (configSelectedIndex >= deck.length) configSelectedIndex = deck.length - 1;
+      saveDeck(getStorageKeyForConfigDeck(), deck);
+      renderConfigList();
+      loadConfigCardIntoForm();
+      updateDeckCounts();
+    }
+
+    function toggleConfig() {
+      configOpen = !configOpen;
+      configPanel.classList.toggle("open", configOpen);
+    }
+
+    // ---------- Event listeners ----------
+
+    modeButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        setMode(btn.dataset.mode);
+      });
+    });
+
+    startGameBtn.addEventListener("click", () => {
       startGame();
     });
 
-    challengeBtn.addEventListener("click", () => {
+    rollChallengeBtn.addEventListener("click", () => {
       rollChallenge();
     });
 
-    punishBtn.addEventListener("click", () => {
+    rollPunishmentBtn.addEventListener("click", () => {
       rollPunishment();
     });
 
-    modeFirstBtn.addEventListener("click", () => setMode("first"));
-    modeMixedBtn.addEventListener("click", () => setMode("mixed"));
-    modeXXXBtn.addEventListener("click", () => setMode("xxx"));
+    reshuffleBtn.addEventListener("click", () => {
+      resetDecksAndStorage();
+    });
 
     configToggle.addEventListener("click", () => {
-      const active = configPanel.classList.toggle("active");
-      configToggle.classList.toggle("active", active);
-      if (active) {
-        cfgDeckType.value = "challenge";
-        cfgIndex = 0;
-        loadConfigCard();
-      }
+      toggleConfig();
     });
 
-    cfgDeckType.addEventListener("change", () => {
-      cfgIndex = 0;
-      loadConfigCard();
+    deckSelect.addEventListener("change", () => {
+      configDeckKey = deckSelect.value;
+      configSelectedIndex = 0;
+      renderConfigList();
+      loadConfigCardIntoForm();
     });
 
-    cfgPrev.addEventListener("click", () => {
-      const { arr } = getCfgDeck();
-      if (!arr.length) return;
-      cfgIndex = (cfgIndex - 1 + arr.length) % arr.length;
-      loadConfigCard();
+    addCardBtn.addEventListener("click", () => {
+      addNewCard();
     });
 
-    cfgNext.addEventListener("click", () => {
-      const { arr } = getCfgDeck();
-      if (!arr.length) return;
-      cfgIndex = (cfgIndex + 1) % arr.length;
-      loadConfigCard();
+    duplicateCardBtn.addEventListener("click", () => {
+      duplicateCard();
     });
 
-    cfgGo.addEventListener("click", () => {
-      const { arr } = getCfgDeck();
-      const val = parseInt(cfgIndexInput.value, 10);
-      if (!arr.length || isNaN(val)) return;
-      const idx = val - 1;
-      if (idx < 0 || idx >= arr.length) {
-        configMessage.textContent = "That card number doesn’t exist in this deck.";
-        return;
-      }
-      cfgIndex = idx;
-      loadConfigCard();
+    deleteCardBtn.addEventListener("click", () => {
+      deleteCard();
     });
 
-    cfgSave.addEventListener("click", () => {
-      saveConfigCard();
+    saveCardBtn.addEventListener("click", () => {
+      saveConfigCardFromForm();
     });
 
-    cfgReset.addEventListener("click", () => {
-      resetAllDecksToDefault();
-      cfgIndex = 0;
-      loadConfigCard();
-      configMessage.textContent = "All decks reset to original cards.";
-    });
+    // ---------- Init ----------
 
-    // Initial
-    buildDecks();
-    updateRemaining();
+    loadAllDecks();
+    setMode(MODES.FIRST);
+    resetRemainingDecks();
+    renderConfigList();
+    loadConfigCardIntoForm();
   </script>
 </body>
 </html>
